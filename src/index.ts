@@ -13,6 +13,7 @@ export type {
     TourGuideState,
     TourGuideEvents,
     TourGuideLabels,
+    TourGuideTooltipCustomization,
     UseTourGuideReturn,
     TourGuideManagerRef
 } from './types'

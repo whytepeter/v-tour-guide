@@ -32,23 +32,23 @@
           :nextLabel="currentStep?.nextLabel || computedLabels.next"
           :prevLabel="currentStep?.prevLabel || computedLabels.previous"
           :finishLabel="currentStep?.finishLabel || computedLabels.finish"
-          :backgroundColor="currentStep?.tooltip?.backgroundColor"
-          :textColor="currentStep?.tooltip?.textColor"
-          :borderRadius="currentStep?.tooltip?.borderRadius"
-          :padding="currentStep?.tooltip?.padding"
-          :maxWidth="currentStep?.tooltip?.maxWidth"
-          :boxShadow="currentStep?.tooltip?.boxShadow"
-          :buttonBackgroundColor="currentStep?.tooltip?.buttonBackgroundColor"
-          :buttonTextColor="currentStep?.tooltip?.buttonTextColor"
-          :buttonHoverColor="currentStep?.tooltip?.buttonHoverColor"
-          :skipButtonColor="currentStep?.tooltip?.skipButtonColor"
-          :skipButtonHoverColor="currentStep?.tooltip?.skipButtonHoverColor"
-          :progressActiveColor="currentStep?.tooltip?.progressActiveColor"
-          :progressInactiveColor="currentStep?.tooltip?.progressInactiveColor"
-          :tooltipClass="currentStep?.tooltip?.tooltipClass"
-          :headerClass="currentStep?.tooltip?.headerClass"
-          :contentClass="currentStep?.tooltip?.contentClass"
-          :actionsClass="currentStep?.tooltip?.actionsClass"
+          :backgroundColor="computedTooltipConfig.backgroundColor"
+          :textColor="computedTooltipConfig.textColor"
+          :borderRadius="computedTooltipConfig.borderRadius"
+          :padding="computedTooltipConfig.padding"
+          :maxWidth="computedTooltipConfig.maxWidth"
+          :boxShadow="computedTooltipConfig.boxShadow"
+          :buttonBackgroundColor="computedTooltipConfig.buttonBackgroundColor"
+          :buttonTextColor="computedTooltipConfig.buttonTextColor"
+          :buttonHoverColor="computedTooltipConfig.buttonHoverColor"
+          :skipButtonColor="computedTooltipConfig.skipButtonColor"
+          :skipButtonHoverColor="computedTooltipConfig.skipButtonHoverColor"
+          :progressActiveColor="computedTooltipConfig.progressActiveColor"
+          :progressInactiveColor="computedTooltipConfig.progressInactiveColor"
+          :tooltipClass="computedTooltipConfig.tooltipClass"
+          :headerClass="computedTooltipConfig.headerClass"
+          :contentClass="computedTooltipConfig.contentClass"
+          :actionsClass="computedTooltipConfig.actionsClass"
         >
           <!-- Forward all slots to the tooltip component -->
           <template #default="slotProps" v-if="$slots.default">
@@ -163,7 +163,11 @@ import {
   readonly,
 } from "vue";
 import TourTooltip from "./TourGuideTooltip.vue";
-import type { TourGuideStep, TourGuideLabels } from "../types";
+import type {
+  TourGuideStep,
+  TourGuideLabels,
+  TourGuideTooltipCustomization,
+} from "../types";
 import { useTourGuide } from "../composables/useTourGuide";
 
 /**
@@ -198,6 +202,9 @@ interface Props {
 
   /** Auto-scroll target into view before highlighting (default: false) */
   scrollToView?: boolean;
+
+  /** Global tooltip customization (can be overridden per step) */
+  tooltip?: TourGuideTooltipCustomization;
 }
 
 /**
@@ -236,6 +243,18 @@ const computedLabels = computed(() => ({
   ...defaultLabels,
   ...props.labels,
 }));
+
+// Computed tooltip configuration that merges global with step-level customization
+const computedTooltipConfig = computed(() => {
+  const globalTooltip = props.tooltip || {};
+  const stepTooltip = currentStep.value?.tooltip || {};
+
+  // Merge global tooltip with step tooltip (step takes precedence)
+  return {
+    ...globalTooltip,
+    ...stepTooltip,
+  };
+});
 
 const emit = defineEmits<Emits>();
 

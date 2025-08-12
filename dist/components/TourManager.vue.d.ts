@@ -1,4 +1,4 @@
-import { TourGuideStep, TourGuideLabels } from '../types';
+import { TourGuideStep, TourGuideLabels, TourGuideTooltipCustomization } from '../types';
 /**
  * Component Props Interface
  *
@@ -23,6 +23,8 @@ interface Props {
     viewportMargin?: number;
     /** Auto-scroll target into view before highlighting (default: false) */
     scrollToView?: boolean;
+    /** Global tooltip customization (can be overridden per step) */
+    tooltip?: TourGuideTooltipCustomization;
 }
 declare function __VLS_template(): {
     attrs: Partial<{}>;

@@ -51,25 +51,7 @@ export interface TourGuideStep {
     finishLabel?: string;
 
     // Tooltip customization props (can be overridden per step)
-    tooltip?: {
-        backgroundColor?: string;
-        textColor?: string;
-        borderRadius?: string;
-        padding?: string;
-        maxWidth?: string;
-        boxShadow?: string;
-        buttonBackgroundColor?: string;
-        buttonTextColor?: string;
-        buttonHoverColor?: string;
-        skipButtonColor?: string;
-        skipButtonHoverColor?: string;
-        progressActiveColor?: string;
-        progressInactiveColor?: string;
-        tooltipClass?: string;
-        headerClass?: string;
-        contentClass?: string;
-        actionsClass?: string;
-    }
+    tooltip?: TourGuideTooltipCustomization
 
     /** Hook called before step becomes visible (async supported) */
     beforeShow?: () => void | Promise<void>;
@@ -101,6 +83,64 @@ export interface TourGuideLabels {
 }
 
 /**
+ * TourGuide Tooltip Customization Interface
+ *
+ * Configuration options for customizing tooltip appearance and behavior.
+ */
+export interface TourGuideTooltipCustomization {
+    /** Background color of the tooltip */
+    backgroundColor?: string;
+
+    /** Text color of the tooltip content */
+    textColor?: string;
+
+    /** Border radius of the tooltip */
+    borderRadius?: string;
+
+    /** Padding inside the tooltip */
+    padding?: string;
+
+    /** Maximum width of the tooltip */
+    maxWidth?: string;
+
+    /** Box shadow of the tooltip */
+    boxShadow?: string;
+
+    /** Background color of action buttons */
+    buttonBackgroundColor?: string;
+
+    /** Text color of action buttons */
+    buttonTextColor?: string;
+
+    /** Hover color of action buttons */
+    buttonHoverColor?: string;
+
+    /** Color of skip button */
+    skipButtonColor?: string;
+
+    /** Hover color of skip button */
+    skipButtonHoverColor?: string;
+
+    /** Color of active progress dots */
+    progressActiveColor?: string;
+
+    /** Color of inactive progress dots */
+    progressInactiveColor?: string;
+
+    /** Custom CSS class for the tooltip container */
+    tooltipClass?: string;
+
+    /** Custom CSS class for the tooltip header */
+    headerClass?: string;
+
+    /** Custom CSS class for the tooltip content */
+    contentClass?: string;
+
+    /** Custom CSS class for the tooltip actions */
+    actionsClass?: string;
+}
+
+/**
  * TourGuideManager Props Interface
  *
  * Configuration options for customizing tour guide manager behavior.
@@ -126,6 +166,15 @@ export interface TourGuideManagerProps {
 
     /** Whether to allow interactions with other elements during tour (default: false) */
     allowInteractions?: boolean;
+
+    /** Minimum distance from viewport edges for tooltip positioning */
+    viewportMargin?: number;
+
+    /** Auto-scroll target into view before highlighting (default: false) */
+    scrollToView?: boolean;
+
+    /** Global tooltip customization (can be overridden per step) */
+    tooltip?: TourGuideTooltipCustomization
 }
 
 /**
