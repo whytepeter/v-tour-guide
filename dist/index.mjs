@@ -1,4 +1,4 @@
-import { defineComponent as fe, useCssVars as Le, computed as L, createElementBlock as b, createCommentVNode as W, openBlock as m, normalizeStyle as E, normalizeClass as Y, createElementVNode as q, renderSlot as $, toDisplayString as Q, Fragment as se, createTextVNode as $e, renderList as Pe, reactive as xe, onMounted as he, readonly as re, ref as C, onUnmounted as Be, watch as oe, nextTick as D, createBlock as Ae, Teleport as Ie, createVNode as He, createSlots as Ge, withCtx as F, normalizeProps as V, guardReactiveProps as X } from "vue";
+import { defineComponent as fe, useCssVars as Le, computed as L, createElementBlock as b, createCommentVNode as W, openBlock as m, normalizeStyle as E, normalizeClass as Y, createElementVNode as q, renderSlot as $, toDisplayString as Q, Fragment as se, createTextVNode as $e, renderList as xe, reactive as Pe, onMounted as he, readonly as re, ref as C, onUnmounted as Be, watch as oe, nextTick as D, createBlock as Ae, Teleport as Ie, createVNode as He, createSlots as Ge, withCtx as F, normalizeProps as V, guardReactiveProps as X } from "vue";
 const Oe = {
   class: "relative space-y-2",
   style: { padding: "0" }
@@ -49,8 +49,8 @@ const Oe = {
   emits: ["close", "next", "previous"],
   setup(A) {
     Le((t) => ({
-      f7aa20b4: s.skipButtonHoverColor,
-      "5862ab07": s.buttonHoverColor
+      "6668a031": s.skipButtonHoverColor,
+      "3ae74ddc": s.buttonHoverColor
     }));
     const s = A, I = L(() => s.currentStep >= s.totalSteps), d = L(() => (t) => {
       const p = t <= s.currentStep, h = Math.abs(t - s.currentStep);
@@ -146,7 +146,7 @@ const Oe = {
             skipLabel: t.skipLabel,
             onClose: () => t.$emit("close")
           }, () => [
-            t.showClose || t.currentStep === 1 ? (m(), b("button", {
+            t.showClose ? (m(), b("button", {
               key: 0,
               type: "button",
               onClick: p[0] || (p[0] = (h) => t.$emit("close")),
@@ -181,7 +181,7 @@ const Oe = {
             totalSteps: t.totalSteps
           }, void 0, !0) : (m(), b("div", We, [
             q("div", Ee, [
-              (m(!0), b(se, null, Pe(t.totalSteps, (h) => (m(), b("div", {
+              (m(!0), b(se, null, xe(t.totalSteps, (h) => (m(), b("div", {
                 key: h,
                 class: Y(["w-1.5 h-1.5 rounded-full transition-all duration-300"]),
                 style: E(d.value(h))
@@ -223,7 +223,7 @@ const Oe = {
   for (const [d, R] of s)
     I[d] = R;
   return I;
-}, Fe = /* @__PURE__ */ Ne(ze, [["__scopeId", "data-v-d62e1b15"]]), f = xe({
+}, Fe = /* @__PURE__ */ Ne(ze, [["__scopeId", "data-v-57d2a578"]]), f = Pe({
   isActive: !1,
   currentStep: 0,
   completedSteps: [],
@@ -301,7 +301,7 @@ const Oe = {
       finishTourGuide: t,
       startTourGuide: p,
       updateCurrentStep: h
-    } = Ve(), g = C(!1), i = C(0), r = C(null), P = C(null), y = C(), z = C(null), j = C(null), T = C({
+    } = Ve(), g = C(!1), i = C(0), r = C(null), x = C(null), y = C(), z = C(null), j = C(null), T = C({
       width: 0,
       height: 0
     }), ie = C("bottom"), ne = C(0), J = C(null), U = C(null), O = C(null), l = L(() => d.steps[i.value]), ge = L(() => {
@@ -359,7 +359,7 @@ const Oe = {
       }
     }, ye = L(() => {
       if (!l.value) return {};
-      const e = P.value || r.value, o = j.value || z.value;
+      const e = x.value || r.value, o = j.value || z.value;
       if (!e || !o) return {};
       const a = o, n = l.value.direction, S = l.value.offsetX || 0, H = l.value.offsetY || 0, u = T.value.width > 0 ? T.value : { width: 320, height: 200 }, N = me(
         a,
@@ -367,30 +367,30 @@ const Oe = {
         n
       );
       ie.value = N;
-      let x = 0, B = 0;
+      let P = 0, B = 0;
       const ee = 12;
       switch (N) {
         case "top":
-          x = a.top - u.height - ee + H, B = a.left + a.width / 2 - u.width / 2 + S;
+          P = a.top - u.height - ee + H, B = a.left + a.width / 2 - u.width / 2 + S;
           break;
         case "bottom":
-          x = a.bottom + ee + H, B = a.left + a.width / 2 - u.width / 2 + S;
+          P = a.bottom + ee + H, B = a.left + a.width / 2 - u.width / 2 + S;
           break;
         case "left":
-          x = a.top + a.height / 2 - u.height / 2 + H, B = a.left - u.width - ee + S;
+          P = a.top + a.height / 2 - u.height / 2 + H, B = a.left - u.width - ee + S;
           break;
         case "right":
-          x = a.top + a.height / 2 - u.height / 2 + H, B = a.right + ee + S;
+          P = a.top + a.height / 2 - u.height / 2 + H, B = a.right + ee + S;
           break;
       }
       const te = {
         width: window.innerWidth,
         height: window.innerHeight
       }, M = d.viewportMargin;
-      B < M ? B = M : B + u.width > te.width - M && (B = te.width - u.width - M), x < M ? x = M : x + u.height > te.height - M && (x = te.height - u.height - M);
+      B < M ? B = M : B + u.width > te.width - M && (B = te.width - u.width - M), P < M ? P = M : P + u.height > te.height - M && (P = te.height - u.height - M);
       const Te = {
         left: B,
-        top: x,
+        top: P,
         width: u.width,
         height: u.height
       };
@@ -399,7 +399,7 @@ const Oe = {
         Te,
         N
       ), {
-        top: `${x}px`,
+        top: `${P}px`,
         left: `${B}px`,
         zIndex: 9999,
         transform: "none"
@@ -410,8 +410,8 @@ const Oe = {
         const e = r.value.getBoundingClientRect(), o = z.value;
         (!o || o.top !== e.top || o.left !== e.left || o.width !== e.width || o.height !== e.height) && (z.value = e);
       }
-      if (P.value) {
-        const e = P.value.getBoundingClientRect(), o = j.value;
+      if (x.value) {
+        const e = x.value.getBoundingClientRect(), o = j.value;
         (!o || o.top !== e.top || o.left !== e.left || o.width !== e.width || o.height !== e.height) && (j.value = e);
       }
       if (y.value) {
@@ -471,11 +471,11 @@ const Oe = {
           );
           return;
         }
-        l.value.tooltipTarget ? (P.value = ve(
+        l.value.tooltipTarget ? (x.value = ve(
           l.value.tooltipTarget
-        ), P.value || (console.warn(
+        ), x.value || (console.warn(
           `Tour Guide: Tooltip target element "${l.value.tooltipTarget}" not found, falling back to main target`
-        ), P.value = null)) : P.value = null, d.scrollToView && (r.value.scrollIntoView({
+        ), x.value = null)) : x.value = null, d.scrollToView && (r.value.scrollIntoView({
           behavior: "smooth",
           // Smooth animation
           block: "center",
@@ -499,9 +499,9 @@ const Oe = {
     }, ae = async () => {
       i.value > 0 && (l.value?.beforeHide && await l.value.beforeHide(), i.value--, h(i.value), await D(), await K(), l.value?.beforeShow && await l.value.beforeShow(), k("step-change", l.value, i.value), l.value?.afterShow && l.value.afterShow());
     }, _ = () => {
-      r.value && (r.value.style.removeProperty("z-index"), r.value.style.removeProperty("position"), r.value.style.removeProperty("border-radius"), r.value.style.removeProperty("pointer-events"), r.value.style.removeProperty("isolation"), r.value.removeAttribute("data-tour-guide-interactive")), Z(), d.allowInteractions || document.body.classList.remove("tour-guide-active"), g.value = !1, r.value = null, P.value = null, z.value = null, j.value = null, T.value = { width: 0, height: 0 }, t(), k("skip");
+      r.value && (r.value.style.removeProperty("z-index"), r.value.style.removeProperty("position"), r.value.style.removeProperty("border-radius"), r.value.style.removeProperty("pointer-events"), r.value.style.removeProperty("isolation"), r.value.removeAttribute("data-tour-guide-interactive")), Z(), d.allowInteractions || document.body.classList.remove("tour-guide-active"), g.value = !1, r.value = null, x.value = null, z.value = null, j.value = null, T.value = { width: 0, height: 0 }, t(), k("skip");
     }, pe = () => {
-      l.value && c(l.value.id), r.value && (r.value.style.removeProperty("z-index"), r.value.style.removeProperty("position"), r.value.style.removeProperty("border-radius"), r.value.style.removeProperty("pointer-events"), r.value.style.removeProperty("isolation"), r.value.removeAttribute("data-tour-guide-interactive")), Z(), d.allowInteractions || document.body.classList.remove("tour-guide-active"), g.value = !1, r.value = null, P.value = null, z.value = null, j.value = null, T.value = { width: 0, height: 0 }, t(), k("complete");
+      l.value && c(l.value.id), r.value && (r.value.style.removeProperty("z-index"), r.value.style.removeProperty("position"), r.value.style.removeProperty("border-radius"), r.value.style.removeProperty("pointer-events"), r.value.style.removeProperty("isolation"), r.value.removeAttribute("data-tour-guide-interactive")), Z(), d.allowInteractions || document.body.classList.remove("tour-guide-active"), g.value = !1, r.value = null, x.value = null, z.value = null, j.value = null, T.value = { width: 0, height: 0 }, t(), k("complete");
     }, ke = async (e) => {
       if (e >= 0 && e < d.steps.length) {
         for (let o = 0; o <= e; o++) {
@@ -522,7 +522,7 @@ const Oe = {
       }
     ), oe(r, (e, o) => {
       o && Z(), e && g.value && (w(), de());
-    }), oe(P, () => {
+    }), oe(x, () => {
       g.value && w();
     }), oe(
       y,
