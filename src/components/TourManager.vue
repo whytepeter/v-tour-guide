@@ -211,6 +211,17 @@ interface Props {
   /** Auto-scroll target into view before highlighting (default: false) */
   scrollToView?: boolean;
 
+  /**
+   * Re-measure the target on every animation frame while a step is showing.
+   *
+   * Dedicated scroll/resize listeners, a MutationObserver and a ResizeObserver
+   * already drive repositioning, so this frame loop adds nothing for those
+   * cases - it only matters when the target drifts under a CSS animation or
+   * transition. It forces a layout every frame for the whole tour, so it is
+   * off by default.
+   */
+  trackAnimations?: boolean;
+
   /** Global tooltip customization (can be overridden per step) */
   tooltip?: TourGuideTooltipCustomization;
 }
@@ -237,6 +248,7 @@ const props = withDefaults(defineProps<Props>(), {
   allowInteractions: false,
   viewportMargin: 16,
   scrollToView: true,
+  trackAnimations: false,
 });
 
 // Default labels for buttons
@@ -642,6 +654,8 @@ const updateTargetRect = () => {
  * - Any other position changes not caught by event listeners
  */
 const startPositionMonitoring = () => {
+  if (!props.trackAnimations) return;
+
   const checkPosition = () => {
     if (isActive.value && currentTarget.value) {
       updateTargetRect();

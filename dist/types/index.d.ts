@@ -135,6 +135,12 @@ export interface TourGuideManagerProps {
     viewportMargin?: number;
     /** Auto-scroll target into view before highlighting (default: false) */
     scrollToView?: boolean;
+    /**
+     * Poll the target's position every animation frame to follow CSS
+     * animations/transitions. Scroll, resize and DOM mutations are already
+     * tracked without this. Costs a forced layout per frame, so default false.
+     */
+    trackAnimations?: boolean;
     /** Global tooltip customization (can be overridden per step) */
     tooltip?: TourGuideTooltipCustomization;
 }
