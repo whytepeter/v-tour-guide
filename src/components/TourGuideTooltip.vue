@@ -34,7 +34,7 @@
         >
           <button
             type="button"
-            v-if="showClose || currentStep === 1"
+            v-if="showClose"
             @click="$emit('close')"
             class="underline text-sm transition-colors flex-shrink-0 custom-skip-btn"
             :style="skipButtonStyle"
