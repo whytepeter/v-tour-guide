@@ -16,6 +16,13 @@ export interface TourGuideStep {
     /** Optional description content shown in the tooltip body */
     content?: string;
 
+    /**
+     * Render `content` as HTML instead of plain text for this step.
+     * Falls back to the manager's `allowHtml` prop when omitted.
+     * Only enable this for content you control - the markup is not sanitized.
+     */
+    allowHtml?: boolean;
+
     /** CSS selector, class, id, or data attribute to target the element */
     target: string;
 
@@ -103,6 +110,9 @@ export interface TourGuideTooltipCustomization {
     /** Maximum width of the tooltip */
     maxWidth?: string;
 
+    /** Minimum width of the tooltip */
+    minWidth?: string;
+
     /** Box shadow of the tooltip */
     boxShadow?: string;
 
@@ -158,6 +168,12 @@ export interface TourGuideManagerProps {
     /** Whether users can skip the entire tour guide flow */
     allowSkip?: boolean;
 
+    /**
+     * Render step `content` as HTML instead of plain text (can be overridden per step).
+     * Only enable this for content you control - the markup is not sanitized.
+     */
+    allowHtml?: boolean;
+
     /** Padding around highlighted elements in pixels (affects cut-out size) */
     highlightPadding?: number;
 
@@ -191,6 +207,12 @@ export interface TourGuideTooltipProps {
 
     /** Content displayed in the tooltip body */
     content?: string;
+
+    /**
+     * Render `content` as HTML instead of plain text.
+     * Only enable this for content you control - the markup is not sanitized.
+     */
+    allowHtml?: boolean;
 
     /** Direction of the tooltip relative to the target */
     direction?: "top" | "bottom" | "left" | "right";
@@ -235,6 +257,7 @@ export interface TourGuideTooltipProps {
     borderRadius?: string;
     padding?: string;
     maxWidth?: string;
+    minWidth?: string;
     boxShadow?: string;
     buttonBackgroundColor?: string;
     buttonTextColor?: string;
