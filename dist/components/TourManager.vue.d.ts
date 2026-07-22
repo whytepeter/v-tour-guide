@@ -13,6 +13,11 @@ interface Props {
     showOverlay?: boolean;
     /** Whether users can skip the entire tour guide flow */
     allowSkip?: boolean;
+    /**
+     * Render step `content` as HTML instead of plain text (can be overridden per step).
+     * Only enable this for content you control - the markup is not sanitized.
+     */
+    allowHtml?: boolean;
     /** Padding around highlighted elements in pixels (affects cut-out size) */
     highlightPadding?: number;
     /** Global labels for tour guide buttons */
@@ -43,7 +48,13 @@ declare function __VLS_template(): {
             totalSteps: number;
             title: string | undefined;
         }): any;
-        content?(_: any): any;
+        content?(_: {
+            step: TourGuideStep;
+            stepIndex: number;
+            currentStep: number;
+            totalSteps: number;
+            content: string | undefined;
+        }): any;
         'skip-button'?(_: {
             step: TourGuideStep;
             stepIndex: number;
@@ -101,6 +112,7 @@ declare const __VLS_component: import('vue').DefineComponent<Props, {
     onSkip?: (() => any) | undefined;
     "onStep-change"?: ((step: TourGuideStep, index: number) => any) | undefined;
 }>, {
+    allowHtml: boolean;
     autoStart: boolean;
     showOverlay: boolean;
     allowSkip: boolean;

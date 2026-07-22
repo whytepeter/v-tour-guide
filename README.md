@@ -159,6 +159,7 @@ const steps: TourGuideStep[] = [
 | `autoStart` | `boolean` | `false` | Auto-start tour when component mounts |
 | `showOverlay` | `boolean` | `true` | Show dimming overlay |
 | `allowSkip` | `boolean` | `true` | Allow users to skip the tour |
+| `allowHtml` | `boolean` | `false` | Render step `content` as HTML (see [Rich content](#rich-content)) |
 | `highlightPadding` | `number` | `4` | Padding around highlighted elements (px) |
 | `labels` | `TourGuideLabels` | `undefined` | Global button labels |
 | `allowInteractions` | `boolean` | `false` | Allow interactions with other elements during tour |
@@ -203,6 +204,7 @@ interface TourGuideStep {
   id: string                              // Unique step identifier
   title: string                           // Tooltip title
   content?: string                        // Tooltip content
+  allowHtml?: boolean                     // Render content as HTML (overrides the manager prop)
   target: string                          // CSS selector, class, id, or data attribute
   tooltipTarget?: string                  // Separate element for tooltip positioning
   direction?: 'top' | 'bottom' | 'left' | 'right' // Tooltip direction
@@ -221,6 +223,7 @@ interface TourGuideStep {
     borderRadius?: string
     padding?: string
     maxWidth?: string
+    minWidth?: string
     boxShadow?: string
     buttonBackgroundColor?: string
     buttonTextColor?: string
@@ -328,7 +331,76 @@ You can customize tooltip appearance and behavior:
 }
 ```
 
+### Rich content
 
+By default `content` renders as plain text, so any markup you write is escaped.
+There are three ways to get formatting.
+
+**1. Line breaks — no configuration needed.** Newlines in a `content` string are
+preserved:
+
+```typescript
+{
+  id: 'welcome',
+  title: 'Welcome',
+  target: 'welcome-card',
+  content: 'First line.\nSecond line.'
+}
+```
+
+**2. HTML — opt in with `allowHtml`.** Set it globally on the manager, or per
+step to override:
+
+```vue
+<TourGuideManager :steps="steps" allow-html />
+```
+
+```typescript
+{
+  id: 'welcome',
+  title: 'Welcome',
+  target: 'welcome-card',
+  allowHtml: true,
+  content: 'Press <kbd>Cmd</kbd>+<kbd>K</kbd> to open <strong>search</strong>.'
+}
+```
+
+> **Security:** `allowHtml` renders the string as-is and does **not** sanitize it.
+> Only enable it for content you author. If step content can come from user input,
+> an API, or a CMS, sanitize it yourself first (e.g. with DOMPurify) or use the
+> `content` slot below instead.
+
+**3. Slots — for anything interactive.** Use these when you need components,
+links with handlers, or images rather than a markup string.
+
+### Slots
+
+All slots are declared on `TourGuideManager` and forwarded to the tooltip.
+
+| Slot | Scope | Replaces |
+|------|-------|----------|
+| `content` | `content`, `step`, `stepIndex`, `currentStep`, `totalSteps` | The tooltip body |
+| `header` | `title`, `step`, `stepIndex`, `currentStep`, `totalSteps` | The title row |
+| `skip-button` | `skipLabel`, `onSkip`, `step`, `currentStep`, `totalSteps` | The skip button |
+| `progress` | `step`, `stepIndex`, `currentStep`, `totalSteps` | The progress dots |
+| `actions` | `showPrevious`, `isLastStep`, `prevLabel`, `nextLabel`, `finishLabel`, `onNext`, `onPrevious`, `onSkip` | The previous/next buttons |
+
+```vue
+<TourGuideManager :steps="steps">
+  <template #content="{ step }">
+    <p class="mb-2">{{ step.content }}</p>
+    <a :href="step.docsUrl" class="underline">Read the docs</a>
+  </template>
+
+  <template #actions="{ isLastStep, onNext, onPrevious, showPrevious }">
+    <button v-if="showPrevious" @click="onPrevious">Back</button>
+    <button @click="onNext">{{ isLastStep ? 'Done' : 'Continue' }}</button>
+  </template>
+</TourGuideManager>
+```
+
+The `content` slot takes precedence over both `allowHtml` and the plain
+`content` string.
 
 ## Advanced Features
 

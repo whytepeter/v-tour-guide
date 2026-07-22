@@ -2,6 +2,11 @@ interface Props {
     visible?: boolean;
     title?: string;
     content?: string;
+    /**
+     * Render `content` as HTML instead of plain text.
+     * Only enable this for content you control - the markup is not sanitized.
+     */
+    allowHtml?: boolean;
     direction?: "top" | "bottom" | "left" | "right";
     showClose?: boolean;
     showActions?: boolean;
@@ -46,6 +51,11 @@ declare function __VLS_template(): {
             skipLabel: string;
             onClose: () => void;
         }): any;
+        content?(_: {
+            content: string | undefined;
+            currentStep: number;
+            totalSteps: number;
+        }): any;
         default?(_: {
             content: string | undefined;
             currentStep: number;
@@ -79,6 +89,7 @@ declare const __VLS_component: import('vue').DefineComponent<Props, {}, {}, {}, 
     onPrevious?: (() => any) | undefined;
 }>, {
     visible: boolean;
+    allowHtml: boolean;
     direction: "top" | "bottom" | "left" | "right";
     showClose: boolean;
     showActions: boolean;
