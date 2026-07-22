@@ -29,21 +29,21 @@ npm install v-tour-guide
 
 ```typescript
 // plugins/v-tour-guide.client.ts
-import { TourGuideManager, TourGuideTooltip } from 'v-tour-guide'
-import 'v-tour-guide/style.css' // Add this line
+import { TourGuideManager, TourGuideTooltip } from "v-tour-guide";
+import "v-tour-guide/style.css"; // Add this line
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.component('TourGuideManager', TourGuideManager)
-  nuxtApp.vueApp.component('TourGuideTooltip', TourGuideTooltip)
-})
+  nuxtApp.vueApp.component("TourGuideManager", TourGuideManager);
+  nuxtApp.vueApp.component("TourGuideTooltip", TourGuideTooltip);
+});
 ```
 
 ### Option 2: Import in your component
 
 ```vue
 <script setup lang="ts">
-import { useTourGuide, type TourGuideStep } from 'v-tour-guide'
-import 'v-tour-guide/style.css' // Add this line
+import { useTourGuide, type TourGuideStep } from "v-tour-guide";
+import "v-tour-guide/style.css"; // Add this line
 </script>
 ```
 
@@ -52,11 +52,9 @@ import 'v-tour-guide/style.css' // Add this line
 ```typescript
 // nuxt.config.ts
 export default defineNuxtConfig({
-  css: [
-    'v-tour-guide/style.css'
-  ],
+  css: ["v-tour-guide/style.css"],
   // ... rest of your config
-})
+});
 ```
 
 ## Live Demo
@@ -73,7 +71,7 @@ export default defineNuxtConfig({
     <!-- Your app content -->
     <div data-tour-guide="welcome">Welcome to our app!</div>
     <button data-tour-guide="action-button">Get Started</button>
-    
+
     <!-- Tour Guide Manager -->
     <TourGuideManager
       :steps="tourSteps"
@@ -84,30 +82,30 @@ export default defineNuxtConfig({
 </template>
 
 <script setup lang="ts">
-import { TourGuideManager, type TourGuideStep } from 'v-tour-guide'
+import { TourGuideManager, type TourGuideStep } from "v-tour-guide";
 
 const tourSteps: TourGuideStep[] = [
   {
-    id: 'welcome',
-    title: 'Welcome!',
-    content: 'This is your first step in the tour.',
-    target: 'welcome',
-    direction: 'bottom',
-    showAction: true
+    id: "welcome",
+    title: "Welcome!",
+    content: "This is your first step in the tour.",
+    target: "welcome",
+    direction: "bottom",
+    showAction: true,
   },
   {
-    id: 'action',
-    title: 'Take Action',
-    content: 'Click this button to get started.',
-    target: 'action-button',
-    direction: 'top',
-    showAction: true
-  }
-]
+    id: "action",
+    title: "Take Action",
+    content: "Click this button to get started.",
+    target: "action-button",
+    direction: "top",
+    showAction: true,
+  },
+];
 
 const onTourComplete = () => {
   // Tour completed
-}
+};
 </script>
 ```
 
@@ -116,12 +114,12 @@ const onTourComplete = () => {
 1. Create a plugin file `plugins/v-tour-guide.client.ts`:
 
 ```typescript
-import { TourGuideManager, TourGuideTooltip } from 'v-tour-guide'
+import { TourGuideManager, TourGuideTooltip } from "v-tour-guide";
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.component('TourGuideManager', TourGuideManager)
-  nuxtApp.vueApp.component('TourGuideTooltip', TourGuideTooltip)
-})
+  nuxtApp.vueApp.component("TourGuideManager", TourGuideManager);
+  nuxtApp.vueApp.component("TourGuideTooltip", TourGuideTooltip);
+});
 ```
 
 2. Use in your pages:
@@ -135,17 +133,15 @@ export default defineNuxtPlugin((nuxtApp) => {
 </template>
 
 <script setup lang="ts">
-import { useTourGuide, type TourGuideStep } from 'v-tour-guide'
+import { useTourGuide, type TourGuideStep } from "v-tour-guide";
 
-const { startTourGuide } = useTourGuide()
+const { startTourGuide } = useTourGuide();
 
 const steps: TourGuideStep[] = [
   // Your tour steps
-]
+];
 </script>
 ```
-
-
 
 ## API Reference
 
@@ -153,90 +149,94 @@ const steps: TourGuideStep[] = [
 
 #### Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `steps` | `TourGuideStep[]` | `[]` | Array of tour steps |
-| `autoStart` | `boolean` | `false` | Auto-start tour when component mounts |
-| `showOverlay` | `boolean` | `true` | Show dimming overlay |
-| `allowSkip` | `boolean` | `true` | Allow users to skip the tour |
-| `highlightPadding` | `number` | `4` | Padding around highlighted elements (px) |
-| `labels` | `TourGuideLabels` | `undefined` | Global button labels |
-| `allowInteractions` | `boolean` | `false` | Allow interactions with other elements during tour |
+| Prop                | Type              | Default     | Description                                                       |
+| ------------------- | ----------------- | ----------- | ----------------------------------------------------------------- |
+| `steps`             | `TourGuideStep[]` | `[]`        | Array of tour steps                                               |
+| `autoStart`         | `boolean`         | `false`     | Auto-start tour when component mounts                             |
+| `showOverlay`       | `boolean`         | `true`      | Show dimming overlay                                              |
+| `allowSkip`         | `boolean`         | `true`      | Allow users to skip the tour                                      |
+| `allowHtml`         | `boolean`         | `false`     | Render step `content` as HTML (see [Rich content](#rich-content)) |
+| `highlightPadding`  | `number`          | `4`         | Padding around highlighted elements (px)                          |
+| `labels`            | `TourGuideLabels` | `undefined` | Global button labels                                              |
+| `allowInteractions` | `boolean`         | `false`     | Allow interactions with other elements during tour                |
 
 #### Events
 
-| Event | Payload | Description |
-|-------|---------|-------------|
-| `start` | `void` | Tour has started |
-| `complete` | `void` | Tour completed successfully |
-| `skip` | `void` | Tour was skipped |
-| `step-change` | `(step: TourGuideStep, index: number)` | Current step changed |
+| Event         | Payload                                | Description                 |
+| ------------- | -------------------------------------- | --------------------------- |
+| `start`       | `void`                                 | Tour has started            |
+| `complete`    | `void`                                 | Tour completed successfully |
+| `skip`        | `void`                                 | Tour was skipped            |
+| `step-change` | `(step: TourGuideStep, index: number)` | Current step changed        |
 
 #### Exposed Methods
 
 ```typescript
 // Start the tour programmatically
-tourManager.startTourGuide()
+tourManager.startTourGuide();
 
 // Skip/stop the tour
-tourManager.skipTourGuide()
+tourManager.skipTourGuide();
 
 // Complete the tour
-tourManager.completeTourGuide()
+tourManager.completeTourGuide();
 
 // Navigate to specific step
-tourManager.goToStep(stepIndex)
+tourManager.goToStep(stepIndex);
 
 // Navigation
-tourManager.nextStep()
-tourManager.previousStep()
+tourManager.nextStep();
+tourManager.previousStep();
 
 // State access
-tourManager.isActive // readonly ref
-tourManager.currentStepIndex // readonly ref
+tourManager.isActive; // readonly ref
+tourManager.currentStepIndex; // readonly ref
 ```
 
 ### TourGuideStep Interface
 
 ```typescript
 interface TourGuideStep {
-  id: string                              // Unique step identifier
-  title: string                           // Tooltip title
-  content?: string                        // Tooltip content
-  target: string                          // CSS selector, class, id, or data attribute
-  tooltipTarget?: string                  // Separate element for tooltip positioning
-  direction?: 'top' | 'bottom' | 'left' | 'right' // Tooltip direction
-  offsetX?: number                        // Horizontal offset (px)
-  offsetY?: number                        // Vertical offset (px)
-  radius?: number                         // Highlight border radius (px)
-  scrollToView?: boolean                  // Auto-scroll to element
-  showAction?: boolean                    // Show action buttons
-  skipLabel?: string                      // Custom skip button label
-  nextLabel?: string                      // Custom next button label  
-  prevLabel?: string                      // Custom previous button label
-  finishLabel?: string                    // Custom finish button label
-  tooltip?: {                             // Tooltip customization options
-    backgroundColor?: string
-    textColor?: string
-    borderRadius?: string
-    padding?: string
-    maxWidth?: string
-    boxShadow?: string
-    buttonBackgroundColor?: string
-    buttonTextColor?: string
-    buttonHoverColor?: string
-    skipButtonColor?: string
-    skipButtonHoverColor?: string
-    progressActiveColor?: string
-    progressInactiveColor?: string
-    tooltipClass?: string
-    headerClass?: string
-    contentClass?: string
-    actionsClass?: string
-  }
-  beforeShow?: () => void | Promise<void> // Pre-show hook
-  afterShow?: () => void                  // Post-show hook
-  beforeHide?: () => void | Promise<void> // Pre-hide hook
+  id: string; // Unique step identifier
+  title: string; // Tooltip title
+  content?: string; // Tooltip content
+  allowHtml?: boolean; // Render content as HTML (overrides the manager prop)
+  target: string; // CSS selector, class, id, or data attribute
+  tooltipTarget?: string; // Separate element for tooltip positioning
+  direction?: "top" | "bottom" | "left" | "right"; // Tooltip direction
+  offsetX?: number; // Horizontal offset (px)
+  offsetY?: number; // Vertical offset (px)
+  radius?: number; // Highlight border radius (px)
+  scrollToView?: boolean; // Auto-scroll to element
+  showAction?: boolean; // Show action buttons
+  skipLabel?: string; // Custom skip button label
+  nextLabel?: string; // Custom next button label
+  prevLabel?: string; // Custom previous button label
+  finishLabel?: string; // Custom finish button label
+  tooltip?: {
+    // Tooltip customization options
+    backgroundColor?: string;
+    textColor?: string;
+    borderRadius?: string;
+    padding?: string;
+    maxWidth?: string;
+    minWidth?: string;
+    boxShadow?: string;
+    buttonBackgroundColor?: string;
+    buttonTextColor?: string;
+    buttonHoverColor?: string;
+    skipButtonColor?: string;
+    skipButtonHoverColor?: string;
+    progressActiveColor?: string;
+    progressInactiveColor?: string;
+    tooltipClass?: string;
+    headerClass?: string;
+    contentClass?: string;
+    actionsClass?: string;
+  };
+  beforeShow?: () => void | Promise<void>; // Pre-show hook
+  afterShow?: () => void; // Post-show hook
+  beforeHide?: () => void | Promise<void>; // Pre-hide hook
 }
 ```
 
@@ -244,10 +244,10 @@ interface TourGuideStep {
 
 ```typescript
 interface TourGuideLabels {
-  skip?: string      // Label for skip button (default: "Skip")
-  next?: string      // Label for next button (default: "Next")  
-  previous?: string  // Label for previous button (default: "Previous")
-  finish?: string    // Label for finish button (default: "Finish")
+  skip?: string; // Label for skip button (default: "Skip")
+  next?: string; // Label for next button (default: "Next")
+  previous?: string; // Label for previous button (default: "Previous")
+  finish?: string; // Label for finish button (default: "Finish")
 }
 ```
 
@@ -255,13 +255,13 @@ interface TourGuideLabels {
 
 ```typescript
 const {
-  tourGuideState,      // Reactive state object
-  startTourGuide,      // Start tour function
-  completeStep,        // Complete specific step
-  finishTourGuide,     // Finish/skip tour
-  resetTourGuide,      // Reset tour state
-  isStepCompleted,     // Check if step is completed
-} = useTourGuide()
+  tourGuideState, // Reactive state object
+  startTourGuide, // Start tour function
+  completeStep, // Complete specific step
+  finishTourGuide, // Finish/skip tour
+  resetTourGuide, // Reset tour state
+  isStepCompleted, // Check if step is completed
+} = useTourGuide();
 ```
 
 ## Element Targeting
@@ -280,27 +280,25 @@ The `target` property accepts CSS selectors and data attributes:
 ```javascript
 const tourSteps = [
   {
-    id: 'welcome',
-    title: 'Welcome!',
-    target: 'welcome',           // data-tour-guide="welcome"
-    content: 'Welcome to our app'
+    id: "welcome",
+    title: "Welcome!",
+    target: "welcome", // data-tour-guide="welcome"
+    content: "Welcome to our app",
   },
   {
-    id: 'submit',
-    title: 'Submit',
-    target: '#submit-button',    // ID selector
-    content: 'Click to submit'
+    id: "submit",
+    title: "Submit",
+    target: "#submit-button", // ID selector
+    content: "Click to submit",
   },
   {
-    id: 'features',
-    title: 'Features',
-    target: '.feature-list',     // Class selector
-    content: 'Check out our features'
-  }
+    id: "features",
+    title: "Features",
+    target: ".feature-list", // Class selector
+    content: "Check out our features",
+  },
 ];
 ```
-
-
 
 ### Tooltip Customization
 
@@ -313,7 +311,7 @@ You can customize tooltip appearance and behavior:
   content: 'This tooltip has custom styling!',
   target: 'my-element',
   showAction: true,
-  
+
   tooltip: {
     backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     textColor: '#ffffff',
@@ -328,7 +326,76 @@ You can customize tooltip appearance and behavior:
 }
 ```
 
+### Rich content
 
+By default `content` renders as plain text, so any markup you write is escaped.
+There are three ways to get formatting.
+
+**1. Line breaks — no configuration needed.** Newlines in a `content` string are
+preserved:
+
+```typescript
+{
+  id: 'welcome',
+  title: 'Welcome',
+  target: 'welcome-card',
+  content: 'First line.\nSecond line.'
+}
+```
+
+**2. HTML — opt in with `allowHtml`.** Set it globally on the manager, or per
+step to override:
+
+```vue
+<TourGuideManager :steps="steps" allow-html />
+```
+
+```typescript
+{
+  id: 'welcome',
+  title: 'Welcome',
+  target: 'welcome-card',
+  allowHtml: true,
+  content: 'Press <kbd>Cmd</kbd>+<kbd>K</kbd> to open <strong>search</strong>.'
+}
+```
+
+> **Security:** `allowHtml` renders the string as-is and does **not** sanitize it.
+> Only enable it for content you author. If step content can come from user input,
+> an API, or a CMS, sanitize it yourself first (e.g. with DOMPurify) or use the
+> `content` slot below instead.
+
+**3. Slots — for anything interactive.** Use these when you need components,
+links with handlers, or images rather than a markup string.
+
+### Slots
+
+All slots are declared on `TourGuideManager` and forwarded to the tooltip.
+
+| Slot          | Scope                                                                                                   | Replaces                  |
+| ------------- | ------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `content`     | `content`, `step`, `stepIndex`, `currentStep`, `totalSteps`                                             | The tooltip body          |
+| `header`      | `title`, `step`, `stepIndex`, `currentStep`, `totalSteps`                                               | The title row             |
+| `skip-button` | `skipLabel`, `onSkip`, `step`, `currentStep`, `totalSteps`                                              | The skip button           |
+| `progress`    | `step`, `stepIndex`, `currentStep`, `totalSteps`                                                        | The progress dots         |
+| `actions`     | `showPrevious`, `isLastStep`, `prevLabel`, `nextLabel`, `finishLabel`, `onNext`, `onPrevious`, `onSkip` | The previous/next buttons |
+
+```vue
+<TourGuideManager :steps="steps">
+  <template #content="{ step }">
+    <p class="mb-2">{{ step.content }}</p>
+    <a :href="step.docsUrl" class="underline">Read the docs</a>
+  </template>
+
+  <template #actions="{ isLastStep, onNext, onPrevious, showPrevious }">
+    <button v-if="showPrevious" @click="onPrevious">Back</button>
+    <button @click="onNext">{{ isLastStep ? 'Done' : 'Continue' }}</button>
+  </template>
+</TourGuideManager>
+```
+
+The `content` slot takes precedence over both `allowHtml` and the plain
+`content` string.
 
 ## Advanced Features
 
@@ -376,8 +443,6 @@ Highlight one element while positioning the tooltip relative to a different elem
 }
 ```
 
-
-
 ## Accessibility
 
 The tour guide is built with accessibility in mind:
@@ -394,8 +459,6 @@ Check out the `examples/` directory for detailed usage examples:
 
 - [Basic Usage](./examples/basic-usage.vue) - Simple tour implementation
 
-
-
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
@@ -409,4 +472,5 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ---
 
 Made with ❤️ for the Vue.js community
+
 # Trigger deployment

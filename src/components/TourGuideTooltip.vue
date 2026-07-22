@@ -34,7 +34,7 @@
         >
           <button
             type="button"
-            v-if="showClose || currentStep === 1"
+            v-if="showClose"
             @click="$emit('close')"
             class="underline text-sm transition-colors flex-shrink-0 custom-skip-btn"
             :style="skipButtonStyle"
@@ -46,23 +46,31 @@
 
       <!-- Body -->
       <div
-        v-if="content || $slots.default"
+        v-if="content || $slots.default || $slots.content"
         :class="[
-          'opacity-90 font-thin leading-4 break-words',
+          'opacity-90 font-thin break-words tour-guide-content',
           props.contentClass,
         ]"
       >
         <!-- Named slot for complete content customization -->
-        <template v-if="$slots.default">
+        <template v-if="$slots.content">
+          <slot
+            name="content"
+            :content="content"
+            :currentStep="currentStep"
+            :totalSteps="totalSteps"
+          />
+        </template>
+        <template v-else-if="$slots.default">
           <slot
             :content="content"
             :currentStep="currentStep"
             :totalSteps="totalSteps"
           />
         </template>
-        <template v-else>
-          {{ content }}
-        </template>
+        <!-- eslint-disable-next-line vue/no-v-html -->
+        <span v-else-if="allowHtml" v-html="content"></span>
+        <template v-else>{{ content }}</template>
       </div>
 
       <!-- Actions -->
@@ -133,6 +141,11 @@ interface Props {
   visible?: boolean;
   title?: string;
   content?: string;
+  /**
+   * Render `content` as HTML instead of plain text.
+   * Only enable this for content you control - the markup is not sanitized.
+   */
+  allowHtml?: boolean;
   direction?: "top" | "bottom" | "left" | "right";
   showClose?: boolean;
   showActions?: boolean;
@@ -184,6 +197,7 @@ interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   visible: true,
+  allowHtml: false,
   direction: "bottom",
   showClose: true,
   showActions: false,
@@ -248,15 +262,6 @@ const getProgressStyle = computed(() => (step: number) => {
 
 // Dynamic styling computeds
 const tooltipStyle = computed(() => {
-  // Calculate content-based width more conservatively
-  const estimatedWidth = Math.max(
-    (props.title?.length || 0) * 7 + 50, // title width + padding
-    (props.content?.length || 0) * 5 + 50, // content width + padding
-    250 // minimum width
-  );
-
-  const finalWidth = Math.min(estimatedWidth, 350); // max 350px
-
   // Handle gradients vs solid colors
   const style: Record<string, string> = {};
 
@@ -271,7 +276,9 @@ const tooltipStyle = computed(() => {
     color: props.textColor,
     borderRadius: props.borderRadius,
     padding: props.padding,
-    width: `${finalWidth}px`,
+    // Let the browser size the tooltip to its content, bounded by min/max.
+    // A character-count estimate cannot account for line breaks or markup.
+    width: "max-content",
     minWidth: props.minWidth,
     maxWidth: props.maxWidth,
     boxShadow: props.boxShadow,
@@ -341,6 +348,14 @@ const skipButtonStyle = computed(() => ({
 </script>
 
 <style scoped>
+/*
+ * Preserve newlines authored in a plain `content` string so multi-line
+ * copy works without needing `allowHtml`. Runs of spaces still collapse.
+ */
+.tour-guide-content {
+  white-space: pre-line;
+}
+
 .custom-skip-btn:hover {
   color: v-bind("props.skipButtonHoverColor") !important;
 }
