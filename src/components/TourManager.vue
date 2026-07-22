@@ -3,7 +3,7 @@
     <div
       v-if="isActive && currentTarget"
       :style="roundedCutoutStyle"
-      class="fixed pointer-events-none"
+      class="vtg-cutout"
     ></div>
 
     <teleport to="body">
@@ -11,7 +11,7 @@
         v-if="isActive && currentTarget"
         ref="tooltipRef"
         :style="tooltipPositionStyle"
-        class="fixed"
+        class="vtg-tooltip-anchor"
         data-tour-guide-interactive="true"
       >
         <TourTooltip
