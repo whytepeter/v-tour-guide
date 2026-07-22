@@ -18,6 +18,7 @@
           :visible="isActive"
           :title="currentStep?.title"
           :content="currentStep?.content"
+          :allow-html="currentStep?.allowHtml ?? allowHtml"
           :direction="finalDirection"
           :current-step="activeStepIndex + 1"
           :total-steps="steps.length"
@@ -37,6 +38,7 @@
           :borderRadius="computedTooltipConfig.borderRadius"
           :padding="computedTooltipConfig.padding"
           :maxWidth="computedTooltipConfig.maxWidth"
+          :minWidth="computedTooltipConfig.minWidth"
           :boxShadow="computedTooltipConfig.boxShadow"
           :buttonBackgroundColor="computedTooltipConfig.buttonBackgroundColor"
           :buttonTextColor="computedTooltipConfig.buttonTextColor"
@@ -188,6 +190,12 @@ interface Props {
   /** Whether users can skip the entire tour guide flow */
   allowSkip?: boolean;
 
+  /**
+   * Render step `content` as HTML instead of plain text (can be overridden per step).
+   * Only enable this for content you control - the markup is not sanitized.
+   */
+  allowHtml?: boolean;
+
   /** Padding around highlighted elements in pixels (affects cut-out size) */
   highlightPadding?: number;
 
@@ -224,6 +232,7 @@ const props = withDefaults(defineProps<Props>(), {
   autoStart: false,
   showOverlay: true,
   allowSkip: true,
+  allowHtml: false,
   highlightPadding: 4,
   allowInteractions: false,
   viewportMargin: 16,

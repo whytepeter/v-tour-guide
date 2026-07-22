@@ -12,6 +12,12 @@ export interface TourGuideStep {
     title: string;
     /** Optional description content shown in the tooltip body */
     content?: string;
+    /**
+     * Render `content` as HTML instead of plain text for this step.
+     * Falls back to the manager's `allowHtml` prop when omitted.
+     * Only enable this for content you control - the markup is not sanitized.
+     */
+    allowHtml?: boolean;
     /** CSS selector, class, id, or data attribute to target the element */
     target: string;
     /** CSS selector, class, id, or data attribute for tooltip positioning (optional) */
@@ -73,6 +79,8 @@ export interface TourGuideTooltipCustomization {
     padding?: string;
     /** Maximum width of the tooltip */
     maxWidth?: string;
+    /** Minimum width of the tooltip */
+    minWidth?: string;
     /** Box shadow of the tooltip */
     boxShadow?: string;
     /** Background color of action buttons */
@@ -112,6 +120,11 @@ export interface TourGuideManagerProps {
     showOverlay?: boolean;
     /** Whether users can skip the entire tour guide flow */
     allowSkip?: boolean;
+    /**
+     * Render step `content` as HTML instead of plain text (can be overridden per step).
+     * Only enable this for content you control - the markup is not sanitized.
+     */
+    allowHtml?: boolean;
     /** Padding around highlighted elements in pixels (affects cut-out size) */
     highlightPadding?: number;
     /** Global labels for tour guide buttons */
@@ -137,6 +150,11 @@ export interface TourGuideTooltipProps {
     title?: string;
     /** Content displayed in the tooltip body */
     content?: string;
+    /**
+     * Render `content` as HTML instead of plain text.
+     * Only enable this for content you control - the markup is not sanitized.
+     */
+    allowHtml?: boolean;
     /** Direction of the tooltip relative to the target */
     direction?: "top" | "bottom" | "left" | "right";
     /** Whether to show the close/skip button */
@@ -166,6 +184,7 @@ export interface TourGuideTooltipProps {
     borderRadius?: string;
     padding?: string;
     maxWidth?: string;
+    minWidth?: string;
     boxShadow?: string;
     buttonBackgroundColor?: string;
     buttonTextColor?: string;
