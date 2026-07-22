@@ -1,3 +1,7 @@
+# AI assistant tooling
+.claude/
+.wolf/
+
 # Dependencies
 node_modules/
 npm-debug.log*
