@@ -1,7 +1,18 @@
-/* Import Tailwind CSS from CDN */
-@import url('https://cdn.tailwindcss.com');
-
 /* Tour Guide Global Styles */
+
+/*
+ * Structural styles for the elements TourManager renders directly.
+ * Kept as plain CSS so the library never depends on a utility framework
+ * being present in the host application.
+ */
+.vtg-cutout {
+  position: fixed;
+  pointer-events: none;
+}
+
+.vtg-tooltip-anchor {
+  position: fixed;
+}
 
 /* 
  * Global interaction blocking when tour guide is active

@@ -25,6 +25,8 @@ npm install v-tour-guide
 
 **Important**: You need to import the tour guide CSS for proper styling (arrows, animations, etc.):
 
+The stylesheet is fully self-contained — it loads nothing from a CDN, requires no CSS framework, and adds no global resets to your page. It works the same whether your app uses Tailwind, Bootstrap, or plain CSS.
+
 ### Option 1: Import in your plugin (Recommended)
 
 ```typescript
