@@ -196,6 +196,13 @@ export interface TourGuideManagerProps {
      */
     trackAnimations?: boolean;
 
+    /**
+     * Animate the highlight and tooltip as they move between steps instead of
+     * jumping. Applied only around a step change, so scroll tracking stays
+     * instant. Default true.
+     */
+    animate?: boolean;
+
     /** Global tooltip customization (can be overridden per step) */
     tooltip?: TourGuideTooltipCustomization
 }

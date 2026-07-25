@@ -14,6 +14,27 @@
   position: fixed;
 }
 
+/*
+ * Smooth slide between steps. The `vtg-animated` modifier is only present
+ * while moving from one target to the next, so live scroll tracking (which
+ * updates the same top/left) stays instant and never lags behind the page.
+ */
+.vtg-cutout.vtg-animated,
+.vtg-tooltip-anchor.vtg-animated {
+  transition:
+    top 0.3s ease,
+    left 0.3s ease,
+    width 0.3s ease,
+    height 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vtg-cutout.vtg-animated,
+  .vtg-tooltip-anchor.vtg-animated {
+    transition: none;
+  }
+}
+
 /* 
  * Global interaction blocking when tour guide is active
  * This prevents all interactions except for marked interactive elements
