@@ -203,6 +203,14 @@ export interface TourGuideManagerProps {
      */
     animate?: boolean;
 
+    /**
+     * Keep the transition on at all times so the highlight and tooltip ease
+     * continuously through every movement. The transition is suppressed while
+     * the page is actively scrolling so the tooltip matches the scroll instead
+     * of trailing behind it. Default false.
+     */
+    fluid?: boolean;
+
     /** Global tooltip customization (can be overridden per step) */
     tooltip?: TourGuideTooltipCustomization
 }

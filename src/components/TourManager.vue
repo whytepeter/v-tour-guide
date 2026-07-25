@@ -4,7 +4,9 @@
       v-if="isActive && currentTarget"
       :style="roundedCutoutStyle"
       class="vtg-cutout"
-      :class="{ 'vtg-animated': animate && isTransitioning }"
+      :class="{
+        'vtg-animated': animate && (isTransitioning || (fluid && !isScrolling)),
+      }"
     ></div>
 
     <teleport to="body">
@@ -13,7 +15,9 @@
         ref="tooltipRef"
         :style="tooltipPositionStyle"
         class="vtg-tooltip-anchor"
-        :class="{ 'vtg-animated': animate && isTransitioning }"
+        :class="{
+        'vtg-animated': animate && (isTransitioning || (fluid && !isScrolling)),
+      }"
         data-tour-guide-interactive="true"
       >
         <TourTooltip
@@ -231,6 +235,14 @@ interface Props {
    */
   animate?: boolean;
 
+  /**
+   * Keep the slide transition on at all times so the highlight and tooltip
+   * ease continuously through every movement, including live scroll - a
+   * fluid, floaty feel. When false (default) the smooth transition applies
+   * only around step changes and scroll tracking stays instant.
+   */
+  fluid?: boolean;
+
   /** Global tooltip customization (can be overridden per step) */
   tooltip?: TourGuideTooltipCustomization;
 }
@@ -259,6 +271,7 @@ const props = withDefaults(defineProps<Props>(), {
   scrollToView: true,
   trackAnimations: false,
   animate: true,
+  fluid: false,
 });
 
 // Default labels for buttons
@@ -308,6 +321,8 @@ const isActive = ref(false); // Whether tour guide is currently running
 const activeStepIndex = ref(0); // Current step index (0-based)
 const isTransitioning = ref(false); // True briefly while moving between steps (drives the slide animation)
 let transitionTimer: ReturnType<typeof setTimeout> | null = null;
+const isScrolling = ref(false); // True while the page is actively scrolling (fluid mode only)
+let scrollIdleTimer: ReturnType<typeof setTimeout> | null = null;
 
 // Element targeting and positioning
 const currentTarget = ref<HTMLElement | null>(null); // Currently highlighted DOM element
@@ -656,6 +671,26 @@ const updateTargetRect = () => {
 };
 
 /**
+ * Scroll handler for position tracking.
+ *
+ * In fluid mode the highlight/tooltip normally ease through movement, but a
+ * transition during scroll would trail behind the page. Flagging an active
+ * scroll suppresses the transition so the tooltip stays pinned to the target
+ * and matches the scroll 1:1; the flag clears shortly after scrolling stops.
+ */
+const handleScroll = () => {
+  if (props.fluid) {
+    isScrolling.value = true;
+    if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
+    scrollIdleTimer = setTimeout(() => {
+      isScrolling.value = false;
+      scrollIdleTimer = null;
+    }, 120);
+  }
+  updateTargetRect();
+};
+
+/**
  * Continuous Position Monitoring
  *
  * Uses requestAnimationFrame for smooth 60fps position tracking.
@@ -736,14 +771,14 @@ const addScrollListeners = () => {
   if (!currentTarget.value) return;
 
   // Global scroll and resize events
-  window.addEventListener("scroll", updateTargetRect, { passive: true });
-  document.addEventListener("scroll", updateTargetRect, { passive: true });
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  document.addEventListener("scroll", handleScroll, { passive: true });
   window.addEventListener("resize", updateTargetRect, { passive: true });
 
   // Nested scrollable container events
   const scrollParents = getScrollParents(currentTarget.value);
   scrollParents.forEach((parent) => {
-    parent.addEventListener("scroll", updateTargetRect, { passive: true });
+    parent.addEventListener("scroll", handleScroll, { passive: true });
   });
 
   // Continuous 60fps position monitoring
@@ -786,15 +821,15 @@ const addScrollListeners = () => {
  */
 const removeScrollListeners = () => {
   // Remove global event listeners (always safe)
-  window.removeEventListener("scroll", updateTargetRect);
-  document.removeEventListener("scroll", updateTargetRect);
+  window.removeEventListener("scroll", handleScroll);
+  document.removeEventListener("scroll", handleScroll);
   window.removeEventListener("resize", updateTargetRect);
 
   // Remove scrollable parent listeners if target still exists
   if (currentTarget.value) {
     const scrollParents = getScrollParents(currentTarget.value);
     scrollParents.forEach((parent) => {
-      parent.removeEventListener("scroll", updateTargetRect);
+      parent.removeEventListener("scroll", handleScroll);
     });
   }
 
@@ -1101,6 +1136,8 @@ const skipTourGuide = () => {
   tooltipSize.value = { width: 0, height: 0 };
   if (transitionTimer) clearTimeout(transitionTimer);
   isTransitioning.value = false;
+  if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
+  isScrolling.value = false;
   finishTourGuide(); // Update composable state
   emit("skip");
 };
@@ -1137,6 +1174,8 @@ const completeTourGuide = () => {
   tooltipSize.value = { width: 0, height: 0 };
   if (transitionTimer) clearTimeout(transitionTimer);
   isTransitioning.value = false;
+  if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
+  isScrolling.value = false;
   finishTourGuide(); // Update composable state
   emit("complete");
 };
@@ -1187,6 +1226,7 @@ onUnmounted(() => {
   // Critical cleanup: remove all event listeners and reset global state
   // This prevents memory leaks and interaction blocking if component unmounts
   if (transitionTimer) clearTimeout(transitionTimer);
+  if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
   if (isActive.value) {
     removeScrollListeners();
     if (!props.allowInteractions) {
