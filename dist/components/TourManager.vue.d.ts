@@ -44,6 +44,13 @@ interface Props {
      * scroll tracking still follows the target instantly. Default true.
      */
     animate?: boolean;
+    /**
+     * Keep the slide transition on at all times so the highlight and tooltip
+     * ease continuously through every movement, including live scroll - a
+     * fluid, floaty feel. When false (default) the smooth transition applies
+     * only around step changes and scroll tracking stays instant.
+     */
+    fluid?: boolean;
     /** Global tooltip customization (can be overridden per step) */
     tooltip?: TourGuideTooltipCustomization;
 }
@@ -138,6 +145,7 @@ declare const __VLS_component: import('vue').DefineComponent<Props, {
     viewportMargin: number;
     scrollToView: boolean;
     trackAnimations: boolean;
+    fluid: boolean;
 }, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {
     tooltipRef: HTMLDivElement;
 }, HTMLDivElement>;
