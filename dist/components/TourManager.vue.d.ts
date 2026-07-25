@@ -38,6 +38,12 @@ interface Props {
      * off by default.
      */
     trackAnimations?: boolean;
+    /**
+     * Animate the highlight and tooltip as they move between steps instead of
+     * jumping. The transition is applied only around a step change, so live
+     * scroll tracking still follows the target instantly. Default true.
+     */
+    animate?: boolean;
     /** Global tooltip customization (can be overridden per step) */
     tooltip?: TourGuideTooltipCustomization;
 }
@@ -123,6 +129,7 @@ declare const __VLS_component: import('vue').DefineComponent<Props, {
     "onStep-change"?: ((step: TourGuideStep, index: number) => any) | undefined;
 }>, {
     allowHtml: boolean;
+    animate: boolean;
     autoStart: boolean;
     showOverlay: boolean;
     allowSkip: boolean;
