@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import tailwindcss from "@tailwindcss/vite";
 import dts from "vite-plugin-dts";
 import { resolve } from "path";
 
@@ -10,7 +11,7 @@ export default defineConfig(({ command, mode }) => {
   if (isDemo) {
     // Demo configuration for GitHub Pages
     return {
-      plugins: [vue()],
+      plugins: [vue(), tailwindcss()],
       base: "/v-tour-guide/", // GitHub Pages base path
       build: {
         outDir: "dist-demo",
