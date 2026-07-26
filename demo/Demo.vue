@@ -6,7 +6,7 @@
       target="_blank"
       class="size-12 flex items-center justify-center fixed top-4 right-4 z-50 bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
     >
-      <i class="fab fa-github text-xl"></i>
+      <font-awesome-icon :icon="['fab', 'github']" class="text-xl" />
     </a>
 
     <!-- Header -->
@@ -14,7 +14,7 @@
       <div
         class="w-20 h-20 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center"
       >
-        <i class="fa-regular fa-compass text-4xl text-white"></i>
+        <font-awesome-icon :icon="['far', 'compass']" class="text-4xl text-white" />
       </div>
       <h1
         class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
@@ -32,7 +32,7 @@
         @click="startTour"
         class="floating-btn bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg transform transition-all duration-300 hover:scale-105 flex items-center gap-3"
       >
-        <i class="fa-regular fa-compass animate-pulse-slow"></i>
+        <font-awesome-icon :icon="['far', 'compass']" class="animate-pulse-slow" />
         Start Interactive Tour
       </button>
     </div>
@@ -48,9 +48,7 @@
           <div
             class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4"
           >
-            <i
-              class="fa-solid fa-hand text-blue-500 dark:text-blue-400 text-xl"
-            ></i>
+            <font-awesome-icon :icon="['fas', 'hand']" class="text-blue-500 dark:text-blue-400 text-xl" />
           </div>
           <h2 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">
             Welcome Card
@@ -80,32 +78,30 @@
           <div
             class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4"
           >
-            <i
-              class="fa-solid fa-star text-purple-500 dark:text-purple-400 text-xl"
-            ></i>
+            <font-awesome-icon :icon="['fas', 'star']" class="text-purple-500 dark:text-purple-400 text-xl" />
           </div>
           <h2 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">
             Amazing Features
           </h2>
           <ul class="space-y-3 text-gray-600 dark:text-gray-400">
             <li class="flex items-center">
-              <i class="fa-solid fa-check text-green-500 mr-3"></i>
+              <font-awesome-icon :icon="['fas', 'check']" class="text-green-500 mr-3" />
               <span>Vue 3 & Composition API</span>
             </li>
             <li class="flex items-center">
-              <i class="fa-solid fa-check text-green-500 mr-3"></i>
+              <font-awesome-icon :icon="['fas', 'check']" class="text-green-500 mr-3" />
               <span>Full TypeScript Support</span>
             </li>
             <li class="flex items-center">
-              <i class="fa-solid fa-check text-green-500 mr-3"></i>
+              <font-awesome-icon :icon="['fas', 'check']" class="text-green-500 mr-3" />
               <span>Nuxt 3 Compatible</span>
             </li>
             <li class="flex items-center">
-              <i class="fa-solid fa-check text-green-500 mr-3"></i>
+              <font-awesome-icon :icon="['fas', 'check']" class="text-green-500 mr-3" />
               <span>Customizable Tooltips</span>
             </li>
             <li class="flex items-center">
-              <i class="fa-solid fa-check text-green-500 mr-3"></i>
+              <font-awesome-icon :icon="['fas', 'check']" class="text-green-500 mr-3" />
               <span>Flexible Positioning</span>
             </li>
           </ul>
@@ -121,9 +117,7 @@
           <div
             class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-4"
           >
-            <i
-              class="fa-solid fa-bolt text-green-500 dark:text-green-400 text-xl"
-            ></i>
+            <font-awesome-icon :icon="['fas', 'bolt']" class="text-green-500 dark:text-green-400 text-xl" />
           </div>
           <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
             🚀 Actions
@@ -197,9 +191,7 @@
           <div
             class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center mb-4"
           >
-            <i
-              class="fa-solid fa-gear text-orange-500 dark:text-orange-400 text-xl"
-            ></i>
+            <font-awesome-icon :icon="['fas', 'gear']" class="text-orange-500 dark:text-orange-400 text-xl" />
           </div>
           <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
             ⚙️ Settings
@@ -243,7 +235,7 @@
         <h2
           class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2"
         >
-          <i class="fa-solid fa-chart-simple text-blue-500"></i>
+          <font-awesome-icon :icon="['fas', 'chart-simple']" class="text-blue-500" />
           Tour Status
         </h2>
         <div class="flex items-center gap-2">
