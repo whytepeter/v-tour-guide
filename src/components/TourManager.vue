@@ -321,6 +321,7 @@ const isActive = ref(false); // Whether tour guide is currently running
 const activeStepIndex = ref(0); // Current step index (0-based)
 const isScrolling = ref(false); // True while the page is actively scrolling (fluid mode only)
 let scrollIdleTimer: ReturnType<typeof setTimeout> | null = null;
+let observedScrollParents: HTMLElement[] = []; // Scroll ancestors currently subscribed
 
 // Element targeting and positioning
 const currentTarget = ref<HTMLElement | null>(null); // Currently highlighted DOM element
@@ -768,14 +769,16 @@ const getScrollParents = (element: HTMLElement): HTMLElement[] => {
 const addScrollListeners = () => {
   if (!currentTarget.value) return;
 
-  // Global scroll and resize events
+  // Global scroll and resize events. Page scroll fires on window, so a
+  // separate document listener would just double every call.
   window.addEventListener("scroll", handleScroll, { passive: true });
-  document.addEventListener("scroll", handleScroll, { passive: true });
   window.addEventListener("resize", updateTargetRect, { passive: true });
 
-  // Nested scrollable container events
-  const scrollParents = getScrollParents(currentTarget.value);
-  scrollParents.forEach((parent) => {
+  // Nested scrollable container events. Remember exactly which elements were
+  // subscribed so teardown can unsubscribe the same ones even if the DOM has
+  // shifted since (recomputing the ancestors could miss some and leak).
+  observedScrollParents = getScrollParents(currentTarget.value);
+  observedScrollParents.forEach((parent) => {
     parent.addEventListener("scroll", handleScroll, { passive: true });
   });
 
@@ -820,16 +823,13 @@ const addScrollListeners = () => {
 const removeScrollListeners = () => {
   // Remove global event listeners (always safe)
   window.removeEventListener("scroll", handleScroll);
-  document.removeEventListener("scroll", handleScroll);
   window.removeEventListener("resize", updateTargetRect);
 
-  // Remove scrollable parent listeners if target still exists
-  if (currentTarget.value) {
-    const scrollParents = getScrollParents(currentTarget.value);
-    scrollParents.forEach((parent) => {
-      parent.removeEventListener("scroll", handleScroll);
-    });
-  }
+  // Unsubscribe the exact parents we subscribed in addScrollListeners
+  observedScrollParents.forEach((parent) => {
+    parent.removeEventListener("scroll", handleScroll);
+  });
+  observedScrollParents = [];
 
   // Stop monitoring
   stopPositionMonitoring();
@@ -877,6 +877,57 @@ const findTargetElement = (selector: string): HTMLElement | null => {
 };
 
 /**
+ * Target Highlight Styling
+ *
+ * The tour sets a few inline styles on the highlighted element so it sits
+ * above the overlay and reads as interactive. The host app may already have
+ * inline values for those same properties, so the originals are saved on
+ * apply and restored on teardown rather than blindly removed.
+ */
+const HIGHLIGHT_STYLE_PROPS = [
+  "position",
+  "zIndex",
+  "borderRadius",
+  "pointerEvents",
+  "isolation",
+] as const;
+
+let savedTargetStyles: Record<string, string> | null = null;
+
+const highlightTarget = (el: HTMLElement) => {
+  // Remember whatever the host had set inline (empty string if unset)
+  savedTargetStyles = {};
+  for (const prop of HIGHLIGHT_STYLE_PROPS) {
+    savedTargetStyles[prop] = el.style[prop as any];
+  }
+
+  el.style.position = "relative"; // Required for z-index
+  el.style.zIndex = "9997"; // Above overlay (9998) and below tooltip (9999)
+  // Match the cut-out's corner radius so the element and its highlight agree
+  el.style.borderRadius = `${currentStep.value?.radius ?? 8}px`;
+  el.style.isolation = "isolate"; // New stacking context
+  el.setAttribute("data-tour-guide-interactive", "true");
+};
+
+const unhighlightTarget = (el: HTMLElement) => {
+  if (savedTargetStyles) {
+    // Restore the host's original inline values ("" clears the property)
+    for (const prop of HIGHLIGHT_STYLE_PROPS) {
+      el.style[prop as any] = savedTargetStyles[prop] ?? "";
+    }
+    savedTargetStyles = null;
+  } else {
+    // No saved snapshot (e.g. cleanup after a remount) - just clear ours
+    el.style.removeProperty("z-index");
+    el.style.removeProperty("position");
+    el.style.removeProperty("border-radius");
+    el.style.removeProperty("pointer-events");
+    el.style.removeProperty("isolation");
+  }
+  el.removeAttribute("data-tour-guide-interactive");
+};
+
+/**
  * Update Current Target Element
  *
  * Core method that manages the transition between tour guide steps:
@@ -892,12 +943,7 @@ const updateCurrentTarget = async () => {
 
   // Clean up previous target element
   if (currentTarget.value) {
-    currentTarget.value.style.removeProperty("z-index");
-    currentTarget.value.style.removeProperty("position");
-    currentTarget.value.style.removeProperty("border-radius");
-    currentTarget.value.style.removeProperty("pointer-events");
-    currentTarget.value.style.removeProperty("isolation");
-    currentTarget.value.removeAttribute("data-tour-guide-interactive");
+    unhighlightTarget(currentTarget.value);
   }
 
   // Find new target element
@@ -940,12 +986,7 @@ const updateCurrentTarget = async () => {
   }
 
   // Set up element highlighting and interactivity
-  // These styles ensure the target is visible above the overlay and interactive
-  currentTarget.value.style.position = "relative"; // Required for z-index
-  currentTarget.value.style.zIndex = "9997"; // Above overlay (z-9998) and below tooltip (z-9999)
-  currentTarget.value.style.borderRadius = "8px"; // Visual polish
-  currentTarget.value.style.isolation = "isolate"; // Creates new stacking context
-  currentTarget.value.setAttribute("data-tour-guide-interactive", "true"); // CSS selector for interaction
+  highlightTarget(currentTarget.value);
 
   // Initialize position tracking for this target
   updateTargetRect();
@@ -1091,12 +1132,7 @@ const previousStep = async () => {
 const skipTourGuide = () => {
   // Reset target element styling and attributes
   if (currentTarget.value) {
-    currentTarget.value.style.removeProperty("z-index");
-    currentTarget.value.style.removeProperty("position");
-    currentTarget.value.style.removeProperty("border-radius");
-    currentTarget.value.style.removeProperty("pointer-events");
-    currentTarget.value.style.removeProperty("isolation");
-    currentTarget.value.removeAttribute("data-tour-guide-interactive");
+    unhighlightTarget(currentTarget.value);
   }
 
   // Remove all scroll listeners and stop monitoring
@@ -1127,12 +1163,7 @@ const completeTourGuide = () => {
 
   // Reset target element styling and attributes
   if (currentTarget.value) {
-    currentTarget.value.style.removeProperty("z-index");
-    currentTarget.value.style.removeProperty("position");
-    currentTarget.value.style.removeProperty("border-radius");
-    currentTarget.value.style.removeProperty("pointer-events");
-    currentTarget.value.style.removeProperty("isolation");
-    currentTarget.value.removeAttribute("data-tour-guide-interactive");
+    unhighlightTarget(currentTarget.value);
   }
 
   // Remove all scroll listeners and stop monitoring
@@ -1203,6 +1234,11 @@ onUnmounted(() => {
   if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
   if (isActive.value) {
     removeScrollListeners();
+    // Restore the target's styles so unmounting mid-tour doesn't leave the
+    // host element stuck above the (now-gone) overlay.
+    if (currentTarget.value) {
+      unhighlightTarget(currentTarget.value);
+    }
     if (!props.allowInteractions) {
       document.body.classList.remove("tour-guide-active");
     }

@@ -20,8 +20,12 @@ export const useTourGuide = () => {
         if (typeof window !== 'undefined') {
             const saved = localStorage.getItem('tour-guide-state')
             if (saved) {
-                const parsed = JSON.parse(saved)
-                Object.assign(tourGuideState, parsed)
+                try {
+                    Object.assign(tourGuideState, JSON.parse(saved))
+                } catch {
+                    // Corrupt entry - drop it rather than throwing during mount
+                    localStorage.removeItem('tour-guide-state')
+                }
             }
         }
     }
