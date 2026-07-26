@@ -22,10 +22,19 @@
 .vtg-cutout.vtg-animated,
 .vtg-tooltip-anchor.vtg-animated {
   transition:
-    top 0.3s ease,
-    left 0.3s ease,
-    width 0.3s ease,
-    height 0.3s ease;
+    top 0.15s ease,
+    left 0.15s ease,
+    width 0.15s ease,
+    height 0.15s ease;
+}
+
+/*
+ * Fluid mode eases over a longer duration for the continuous, floaty feel.
+ * Only the duration is overridden; it must come after the base rule to win.
+ */
+.vtg-cutout.vtg-fluid,
+.vtg-tooltip-anchor.vtg-fluid {
+  transition-duration: 0.3s;
 }
 
 @media (prefers-reduced-motion: reduce) {
