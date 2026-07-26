@@ -45,6 +45,11 @@ interface Props {
      * When false (default) they jump instantly to each position, as before.
      */
     fluid?: boolean;
+    /**
+     * Duration of the fluid transition, in milliseconds. Higher is slower.
+     * Only applies when `fluid` is true. Default 300.
+     */
+    fluidDuration?: number;
     /** Global tooltip customization (can be overridden per step) */
     tooltip?: TourGuideTooltipCustomization;
 }
@@ -139,6 +144,7 @@ declare const __VLS_component: import('vue').DefineComponent<Props, {
     scrollToView: boolean;
     trackAnimations: boolean;
     fluid: boolean;
+    fluidDuration: number;
 }, {}, {}, {}, string, import('vue').ComponentProvideOptions, false, {
     tooltipRef: HTMLDivElement;
 }, HTMLDivElement>;

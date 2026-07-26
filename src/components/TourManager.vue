@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="isActive && currentTarget"
-      :style="roundedCutoutStyle"
+      :style="[roundedCutoutStyle, fluidVars]"
       class="vtg-cutout"
       :class="{ 'vtg-animated': fluid && !isScrolling }"
     ></div>
@@ -11,7 +11,7 @@
       <div
         v-if="isActive && currentTarget"
         ref="tooltipRef"
-        :style="tooltipPositionStyle"
+        :style="[tooltipPositionStyle, fluidVars]"
         class="vtg-tooltip-anchor"
         :class="{ 'vtg-animated': fluid && !isScrolling }"
         data-tour-guide-interactive="true"
@@ -232,6 +232,12 @@ interface Props {
    */
   fluid?: boolean;
 
+  /**
+   * Duration of the fluid transition, in milliseconds. Higher is slower.
+   * Only applies when `fluid` is true. Default 300.
+   */
+  fluidDuration?: number;
+
   /** Global tooltip customization (can be overridden per step) */
   tooltip?: TourGuideTooltipCustomization;
 }
@@ -260,7 +266,13 @@ const props = withDefaults(defineProps<Props>(), {
   scrollToView: true,
   trackAnimations: false,
   fluid: false,
+  fluidDuration: 300,
 });
+
+// CSS variable that drives the fluid transition duration (see style.css).
+const fluidVars = computed(() => ({
+  "--vtg-fluid-duration": `${props.fluidDuration}ms`,
+}));
 
 // Default labels for buttons
 const defaultLabels: TourGuideLabels = {

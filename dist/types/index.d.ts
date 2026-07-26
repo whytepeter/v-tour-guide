@@ -148,6 +148,11 @@ export interface TourGuideManagerProps {
      * (default) they jump instantly to each position.
      */
     fluid?: boolean;
+    /**
+     * Duration of the fluid transition, in milliseconds. Higher is slower.
+     * Only applies when `fluid` is true. Default 300.
+     */
+    fluidDuration?: number;
     /** Global tooltip customization (can be overridden per step) */
     tooltip?: TourGuideTooltipCustomization;
 }
