@@ -197,17 +197,10 @@ export interface TourGuideManagerProps {
     trackAnimations?: boolean;
 
     /**
-     * Animate the highlight and tooltip as they move between steps instead of
-     * jumping. Applied only around a step change, so scroll tracking stays
-     * instant. Default true.
-     */
-    animate?: boolean;
-
-    /**
-     * Keep the transition on at all times so the highlight and tooltip ease
-     * continuously through every movement. The transition is suppressed while
-     * the page is actively scrolling so the tooltip matches the scroll instead
-     * of trailing behind it. Default false.
+     * Fluid movement. When true, the highlight and tooltip ease smoothly
+     * between steps and as the target shifts, with the transition suppressed
+     * during active scrolling so they stay matched to the page. When false
+     * (default) they jump instantly to each position.
      */
     fluid?: boolean;
 

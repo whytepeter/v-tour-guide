@@ -4,10 +4,7 @@
       v-if="isActive && currentTarget"
       :style="roundedCutoutStyle"
       class="vtg-cutout"
-      :class="{
-        'vtg-animated': animate && (isTransitioning || (fluid && !isScrolling)),
-        'vtg-fluid': animate && fluid && !isScrolling,
-      }"
+      :class="{ 'vtg-animated': fluid && !isScrolling }"
     ></div>
 
     <teleport to="body">
@@ -16,10 +13,7 @@
         ref="tooltipRef"
         :style="tooltipPositionStyle"
         class="vtg-tooltip-anchor"
-        :class="{
-        'vtg-animated': animate && (isTransitioning || (fluid && !isScrolling)),
-        'vtg-fluid': animate && fluid && !isScrolling,
-      }"
+        :class="{ 'vtg-animated': fluid && !isScrolling }"
         data-tour-guide-interactive="true"
       >
         <TourTooltip
@@ -231,17 +225,10 @@ interface Props {
   trackAnimations?: boolean;
 
   /**
-   * Animate the highlight and tooltip as they move between steps instead of
-   * jumping. The transition is applied only around a step change, so live
-   * scroll tracking still follows the target instantly. Default true.
-   */
-  animate?: boolean;
-
-  /**
-   * Keep the slide transition on at all times so the highlight and tooltip
-   * ease continuously through every movement, including live scroll - a
-   * fluid, floaty feel. When false (default) the smooth transition applies
-   * only around step changes and scroll tracking stays instant.
+   * Fluid movement. When true, the highlight and tooltip ease smoothly as
+   * they move between steps and as the target shifts, with the transition
+   * suppressed during active scrolling so they stay matched to the page.
+   * When false (default) they jump instantly to each position, as before.
    */
   fluid?: boolean;
 
@@ -272,7 +259,6 @@ const props = withDefaults(defineProps<Props>(), {
   viewportMargin: 16,
   scrollToView: true,
   trackAnimations: false,
-  animate: true,
   fluid: false,
 });
 
@@ -321,8 +307,6 @@ const {
 // Core tour guide flow state
 const isActive = ref(false); // Whether tour guide is currently running
 const activeStepIndex = ref(0); // Current step index (0-based)
-const isTransitioning = ref(false); // True briefly while moving between steps (drives the slide animation)
-let transitionTimer: ReturnType<typeof setTimeout> | null = null;
 const isScrolling = ref(false); // True while the page is actively scrolling (fluid mode only)
 let scrollIdleTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -894,15 +878,6 @@ const findTargetElement = (selector: string): HTMLElement | null => {
 const updateCurrentTarget = async () => {
   if (!currentStep.value) return;
 
-  // A previous target already exists => this is a move between steps, so the
-  // highlight and tooltip should slide rather than jump. On the initial show
-  // there is nothing to animate from, so leave it off.
-  const animateMove = props.animate && !!currentTarget.value;
-  if (animateMove) {
-    if (transitionTimer) clearTimeout(transitionTimer);
-    isTransitioning.value = true;
-  }
-
   // Clean up previous target element
   if (currentTarget.value) {
     currentTarget.value.style.removeProperty("z-index");
@@ -978,16 +953,6 @@ const updateCurrentTarget = async () => {
   }
 
   updateTargetRect();
-
-  // Keep the slide transition active briefly after the final position is
-  // applied, then turn it off so subsequent scroll tracking stays instant.
-  if (animateMove) {
-    if (transitionTimer) clearTimeout(transitionTimer);
-    transitionTimer = setTimeout(() => {
-      isTransitioning.value = false;
-      transitionTimer = null;
-    }, 320);
-  }
 };
 
 /**
@@ -1136,8 +1101,6 @@ const skipTourGuide = () => {
   targetRect.value = null;
   tooltipTargetRect.value = null;
   tooltipSize.value = { width: 0, height: 0 };
-  if (transitionTimer) clearTimeout(transitionTimer);
-  isTransitioning.value = false;
   if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
   isScrolling.value = false;
   finishTourGuide(); // Update composable state
@@ -1174,8 +1137,6 @@ const completeTourGuide = () => {
   targetRect.value = null;
   tooltipTargetRect.value = null;
   tooltipSize.value = { width: 0, height: 0 };
-  if (transitionTimer) clearTimeout(transitionTimer);
-  isTransitioning.value = false;
   if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
   isScrolling.value = false;
   finishTourGuide(); // Update composable state
@@ -1227,7 +1188,6 @@ onMounted(() => {
 onUnmounted(() => {
   // Critical cleanup: remove all event listeners and reset global state
   // This prevents memory leaks and interaction blocking if component unmounts
-  if (transitionTimer) clearTimeout(transitionTimer);
   if (scrollIdleTimer) clearTimeout(scrollIdleTimer);
   if (isActive.value) {
     removeScrollListeners();
