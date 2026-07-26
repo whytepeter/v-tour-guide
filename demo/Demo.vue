@@ -331,6 +331,18 @@
       @skip="onTourSkip"
       @step-change="onStepChange"
     />
+
+    <!-- Non-blocking toast -->
+    <Transition name="toast">
+      <div
+        v-if="toast"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[10000] px-5 py-3 rounded-full bg-gray-900 text-white text-sm shadow-lg"
+        role="status"
+        aria-live="polite"
+      >
+        {{ toast }}
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -354,6 +366,15 @@ const tourManager = ref<InstanceType<typeof TourGuideManager>>();
 const allowInteractions = ref(false);
 const fluid = ref(false);
 const fluidDuration = ref(300);
+
+// Lightweight non-blocking toast (replaces alert() so the main thread never stalls)
+const toast = ref("");
+let toastTimer: ReturnType<typeof setTimeout> | null = null;
+const showToast = (message: string) => {
+  toast.value = message;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => (toast.value = ""), 3200);
+};
 
 // Custom Labels for Tour Guide
 const customLabels: TourGuideLabels = {
@@ -471,14 +492,12 @@ const onTourStart = () => {
 
 const onTourComplete = () => {
   // Tour completed successfully
-  alert(
-    "🎉 Congratulations! You've completed the tour. You're now ready to use Vue Tour Guide!"
-  );
+  showToast("🎉 Tour complete! You're ready to use Vue Tour Guide.");
 };
 
 const onTourSkip = () => {
   // Tour was skipped
-  alert("Tour skipped. You can restart it anytime!");
+  showToast("Tour skipped — restart it anytime.");
 };
 
 const onStepChange = (step: TourGuideStep, index: number) => {
@@ -497,11 +516,23 @@ const startCustomTour = () => {
 
 const resetTourGuide = () => {
   resetTourState();
-  alert("🔄 Tour state has been reset!");
+  showToast("🔄 Tour state reset.");
 };
 </script>
 
 <style scoped>
+.toast-enter-active,
+.toast-leave-active {
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translate(-50%, 0.75rem);
+}
+
 .card-hover {
   transition: all 0.3s ease;
 }
