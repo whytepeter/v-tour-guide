@@ -39,16 +39,10 @@ interface Props {
      */
     trackAnimations?: boolean;
     /**
-     * Animate the highlight and tooltip as they move between steps instead of
-     * jumping. The transition is applied only around a step change, so live
-     * scroll tracking still follows the target instantly. Default true.
-     */
-    animate?: boolean;
-    /**
-     * Keep the slide transition on at all times so the highlight and tooltip
-     * ease continuously through every movement, including live scroll - a
-     * fluid, floaty feel. When false (default) the smooth transition applies
-     * only around step changes and scroll tracking stays instant.
+     * Fluid movement. When true, the highlight and tooltip ease smoothly as
+     * they move between steps and as the target shifts, with the transition
+     * suppressed during active scrolling so they stay matched to the page.
+     * When false (default) they jump instantly to each position, as before.
      */
     fluid?: boolean;
     /** Global tooltip customization (can be overridden per step) */
@@ -136,7 +130,6 @@ declare const __VLS_component: import('vue').DefineComponent<Props, {
     "onStep-change"?: ((step: TourGuideStep, index: number) => any) | undefined;
 }>, {
     allowHtml: boolean;
-    animate: boolean;
     autoStart: boolean;
     showOverlay: boolean;
     allowSkip: boolean;

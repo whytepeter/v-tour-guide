@@ -15,26 +15,18 @@
 }
 
 /*
- * Smooth slide between steps. The `vtg-animated` modifier is only present
- * while moving from one target to the next, so live scroll tracking (which
- * updates the same top/left) stays instant and never lags behind the page.
+ * Fluid movement. The `vtg-animated` modifier is only present in fluid mode
+ * and is dropped while the page is actively scrolling, so scroll tracking
+ * (which updates the same top/left) stays matched to the page and never lags.
+ * Without fluid the modifier is never applied, so movement is an instant jump.
  */
 .vtg-cutout.vtg-animated,
 .vtg-tooltip-anchor.vtg-animated {
   transition:
-    top 0.15s ease,
-    left 0.15s ease,
-    width 0.15s ease,
-    height 0.15s ease;
-}
-
-/*
- * Fluid mode eases over a longer duration for the continuous, floaty feel.
- * Only the duration is overridden; it must come after the base rule to win.
- */
-.vtg-cutout.vtg-fluid,
-.vtg-tooltip-anchor.vtg-fluid {
-  transition-duration: 0.3s;
+    top 0.3s ease,
+    left 0.3s ease,
+    width 0.3s ease,
+    height 0.3s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
