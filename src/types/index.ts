@@ -189,6 +189,27 @@ export interface TourGuideManagerProps {
     /** Auto-scroll target into view before highlighting (default: false) */
     scrollToView?: boolean;
 
+    /**
+     * Poll the target's position every animation frame to follow CSS
+     * animations/transitions. Scroll, resize and DOM mutations are already
+     * tracked without this. Costs a forced layout per frame, so default false.
+     */
+    trackAnimations?: boolean;
+
+    /**
+     * Fluid movement. When true, the highlight and tooltip ease smoothly
+     * between steps and as the target shifts, with the transition suppressed
+     * during active scrolling so they stay matched to the page. When false
+     * (default) they jump instantly to each position.
+     */
+    fluid?: boolean;
+
+    /**
+     * Duration of the fluid transition, in milliseconds. Higher is slower.
+     * Only applies when `fluid` is true. Default 300.
+     */
+    fluidDuration?: number;
+
     /** Global tooltip customization (can be overridden per step) */
     tooltip?: TourGuideTooltipCustomization
 }

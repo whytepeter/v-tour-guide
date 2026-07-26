@@ -1,7 +1,40 @@
-/* Import Tailwind CSS from CDN */
-@import url('https://cdn.tailwindcss.com');
-
 /* Tour Guide Global Styles */
+
+/*
+ * Structural styles for the elements TourManager renders directly.
+ * Kept as plain CSS so the library never depends on a utility framework
+ * being present in the host application.
+ */
+.vtg-cutout {
+  position: fixed;
+  pointer-events: none;
+}
+
+.vtg-tooltip-anchor {
+  position: fixed;
+}
+
+/*
+ * Fluid movement. The `vtg-animated` modifier is only present in fluid mode
+ * and is dropped while the page is actively scrolling, so scroll tracking
+ * (which updates the same top/left) stays matched to the page and never lags.
+ * Without fluid the modifier is never applied, so movement is an instant jump.
+ */
+.vtg-cutout.vtg-animated,
+.vtg-tooltip-anchor.vtg-animated {
+  transition:
+    top var(--vtg-fluid-duration, 0.3s) ease-out,
+    left var(--vtg-fluid-duration, 0.3s) ease-out,
+    width var(--vtg-fluid-duration, 0.3s) ease-out,
+    height var(--vtg-fluid-duration, 0.3s) ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vtg-cutout.vtg-animated,
+  .vtg-tooltip-anchor.vtg-animated {
+    transition: none;
+  }
+}
 
 /* 
  * Global interaction blocking when tour guide is active

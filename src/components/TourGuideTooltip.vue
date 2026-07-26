@@ -1,29 +1,23 @@
 <template>
   <div
     v-if="visible"
-    :class="[
-      'relative z-50 text-sm',
-      'animate-in fade-in-0 zoom-in-95 duration-200',
-      props.tooltipClass,
-    ]"
+    :class="['vtg-tooltip', 'animate-in', props.tooltipClass]"
     :style="tooltipStyle"
   >
     <!-- Smart Arrow with Dynamic Positioning -->
     <div :class="['arrow-base', arrowDirectionClass]" :style="arrowStyle"></div>
 
     <!-- Content -->
-    <div class="relative space-y-2" :style="{ padding: '0' }">
+    <div class="vtg-stack">
       <!-- Header with Skip button -->
-      <div
-        :class="['flex items-start justify-between gap-3 ', props.headerClass]"
-      >
+      <div :class="['vtg-header', props.headerClass]">
         <slot
           name="header"
           :title="title"
           :currentStep="currentStep"
           :totalSteps="totalSteps"
         >
-          <h3 v-if="title" class="font-medium leading-tight flex-1 min-w-0">
+          <h3 v-if="title" class="vtg-title">
             {{ title }}
           </h3>
         </slot>
@@ -36,7 +30,7 @@
             type="button"
             v-if="showClose"
             @click="$emit('close')"
-            class="underline text-sm transition-colors flex-shrink-0 custom-skip-btn"
+            class="custom-skip-btn"
             :style="skipButtonStyle"
           >
             {{ skipLabel }}
@@ -47,10 +41,7 @@
       <!-- Body -->
       <div
         v-if="content || $slots.default || $slots.content"
-        :class="[
-          'opacity-90 font-thin break-words tour-guide-content',
-          props.contentClass,
-        ]"
+        :class="['tour-guide-content', props.contentClass]"
       >
         <!-- Named slot for complete content customization -->
         <template v-if="$slots.content">
@@ -74,10 +65,7 @@
       </div>
 
       <!-- Actions -->
-      <div
-        v-if="showActions"
-        :class="['flex items-center justify-between gap-2', props.actionsClass]"
-      >
+      <div v-if="showActions" :class="['vtg-actions', props.actionsClass]">
         <slot
           v-if="$slots.progress"
           name="progress"
@@ -85,18 +73,18 @@
           :totalSteps="totalSteps"
         />
 
-        <div v-else class="flex items-center flex-1">
-          <div class="flex items-center gap-1 pr-2 py-1 rounded-full">
+        <div v-else class="vtg-progress">
+          <div class="vtg-progress-track">
             <div
               v-for="step in totalSteps"
               :key="step"
-              :class="['w-1.5 h-1.5 rounded-full transition-all duration-300']"
+              class="vtg-progress-dot"
               :style="getProgressStyle(step)"
             ></div>
           </div>
         </div>
 
-        <div class="flex items-center gap-1.5 flex-shrink-0">
+        <div class="vtg-action-group">
           <template v-if="$slots.actions">
             <slot
               name="actions"
@@ -114,7 +102,7 @@
               type="button"
               v-if="showPrevious"
               @click="$emit('previous')"
-              class="text-xs px-2 py-1 rounded-md transition-colors flex-shrink-0 custom-action-btn whitespace-nowrap"
+              class="custom-action-btn"
               :style="buttonStyle"
             >
               {{ prevLabel }}
@@ -122,7 +110,7 @@
             <button
               type="button"
               @click="$emit('next')"
-              class="text-xs px-2 py-1 rounded-md transition-colors flex-shrink-0 custom-action-btn whitespace-nowrap"
+              class="custom-action-btn"
               :style="buttonStyle"
             >
               {{ isLastStep ? finishLabel : nextLabel }}
@@ -349,11 +337,120 @@ const skipButtonStyle = computed(() => ({
 
 <style scoped>
 /*
+ * Self-contained tooltip styles.
+ *
+ * These are deliberately plain CSS rather than utility classes: the library
+ * must render correctly whether or not the host app uses Tailwind, and must
+ * never inject a CSS framework (and its global resets) into someone else's
+ * page. Colors, radius, padding and width all come from props via inline
+ * styles, so only layout and typography live here.
+ *
+ * Consumers override via the `tooltipClass` / `headerClass` / `contentClass` /
+ * `actionsClass` props. Those land on the same elements and, being unscoped,
+ * win on specificity over the single-class selectors below.
+ */
+
+.vtg-tooltip {
+  position: relative;
+  z-index: 50;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  box-sizing: border-box;
+}
+
+/* Vertical rhythm between header / body / actions */
+.vtg-stack {
+  position: relative;
+}
+
+.vtg-stack > * + * {
+  margin-top: 0.5rem;
+}
+
+.vtg-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.vtg-title {
+  flex: 1 1 0%;
+  min-width: 0;
+  margin: 0;
+  font-size: inherit;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+/*
  * Preserve newlines authored in a plain `content` string so multi-line
  * copy works without needing `allowHtml`. Runs of spaces still collapse.
  */
 .tour-guide-content {
+  opacity: 0.9;
+  font-weight: 100;
+  overflow-wrap: break-word;
   white-space: pre-line;
+}
+
+.vtg-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.vtg-progress {
+  display: flex;
+  align-items: center;
+  flex: 1 1 0%;
+}
+
+.vtg-progress-track {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem 0.25rem 0;
+}
+
+.vtg-progress-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  transition: all 300ms;
+}
+
+.vtg-action-group {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.custom-skip-btn {
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.875rem;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 150ms;
+}
+
+.custom-action-btn {
+  flex-shrink: 0;
+  border: 0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font: inherit;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms;
 }
 
 .custom-skip-btn:hover {

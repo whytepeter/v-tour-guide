@@ -147,7 +147,9 @@
             >
               🔄 Reset Tour
             </button>
-            <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
+            <div
+              class="pt-3 border-t border-gray-200 dark:border-gray-700 space-y-3"
+            >
               <label class="flex items-center space-x-3">
                 <input
                   type="checkbox"
@@ -157,6 +159,32 @@
                 <span class="text-sm text-gray-600 dark:text-gray-400"
                   >Allow interactions during tour</span
                 >
+              </label>
+              <label class="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  v-model="fluid"
+                  class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                />
+                <span class="text-sm text-gray-600 dark:text-gray-400"
+                  >Fluid movement (eases continuously, matches scroll)</span
+                >
+              </label>
+              <label
+                v-if="fluid"
+                class="flex items-center justify-between space-x-3"
+              >
+                <span class="text-sm text-gray-600 dark:text-gray-400"
+                  >Fluid speed: {{ fluidDuration }}ms</span
+                >
+                <input
+                  type="range"
+                  v-model.number="fluidDuration"
+                  min="150"
+                  max="1200"
+                  step="50"
+                  class="w-32"
+                />
               </label>
             </div>
           </div>
@@ -295,6 +323,8 @@
       :auto-start="false"
       :allow-skip="true"
       :allow-interactions="allowInteractions"
+      :fluid="fluid"
+      :fluid-duration="fluidDuration"
       :labels="customLabels"
       @start="onTourStart"
       @complete="onTourComplete"
@@ -322,6 +352,8 @@ const tourManager = ref<InstanceType<typeof TourGuideManager>>();
 // UI State
 
 const allowInteractions = ref(false);
+const fluid = ref(false);
+const fluidDuration = ref(300);
 
 // Custom Labels for Tour Guide
 const customLabels: TourGuideLabels = {
