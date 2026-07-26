@@ -974,8 +974,8 @@ const updateCurrentTarget = async () => {
     currentTooltipTarget.value = null;
   }
 
-  // Auto-scroll to target if enabled
-  if (props.scrollToView) {
+  // Auto-scroll to target if enabled (per-step override falls back to the prop)
+  if (currentStep.value?.scrollToView ?? props.scrollToView) {
     currentTarget.value.scrollIntoView({
       behavior: "smooth", // Smooth animation
       block: "center", // Center vertically in viewport

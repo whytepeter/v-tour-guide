@@ -30,6 +30,8 @@ export interface TourGuideStep {
     offsetY?: number;
     /** Border radius for the highlight cut-out (pixels, default: 8) */
     radius?: number;
+    /** Auto-scroll this step's target into view (overrides the manager's `scrollToView`) */
+    scrollToView?: boolean;
     /** Whether to show the action button */
     showAction?: boolean;
     /** Custom label for skip button */
