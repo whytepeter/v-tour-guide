@@ -170,6 +170,22 @@
                   >Fluid movement (eases continuously, matches scroll)</span
                 >
               </label>
+              <label
+                v-if="fluid"
+                class="flex items-center justify-between space-x-3"
+              >
+                <span class="text-sm text-gray-600 dark:text-gray-400"
+                  >Fluid speed: {{ fluidDuration }}ms</span
+                >
+                <input
+                  type="range"
+                  v-model.number="fluidDuration"
+                  min="150"
+                  max="1200"
+                  step="50"
+                  class="w-32"
+                />
+              </label>
             </div>
           </div>
         </div>
@@ -308,6 +324,7 @@
       :allow-skip="true"
       :allow-interactions="allowInteractions"
       :fluid="fluid"
+      :fluid-duration="fluidDuration"
       :labels="customLabels"
       @start="onTourStart"
       @complete="onTourComplete"
@@ -336,6 +353,7 @@ const tourManager = ref<InstanceType<typeof TourGuideManager>>();
 
 const allowInteractions = ref(false);
 const fluid = ref(false);
+const fluidDuration = ref(300);
 
 // Custom Labels for Tour Guide
 const customLabels: TourGuideLabels = {

@@ -164,6 +164,7 @@ const steps: TourGuideStep[] = [
 | `scrollToView`      | `boolean`         | `true`      | Auto-scroll the target into view before highlighting              |
 | `trackAnimations`   | `boolean`         | `false`     | Poll target position each frame to follow CSS animations (see note) |
 | `fluid`             | `boolean`         | `false`     | Ease the highlight/tooltip between steps (matched to scroll); off = instant jump |
+| `fluidDuration`     | `number`          | `300`       | Fluid transition duration in ms (higher = slower); only used when `fluid` is on |
 
 > `trackAnimations` re-measures the target every animation frame. Scrolling, resizing, and DOM changes are tracked without it — only enable it if your target element moves under a CSS animation or transition while a step is showing, since it forces a layout on every frame.
 

@@ -23,10 +23,10 @@
 .vtg-cutout.vtg-animated,
 .vtg-tooltip-anchor.vtg-animated {
   transition:
-    top 0.3s ease,
-    left 0.3s ease,
-    width 0.3s ease,
-    height 0.3s ease;
+    top var(--vtg-fluid-duration, 0.3s) ease,
+    left var(--vtg-fluid-duration, 0.3s) ease,
+    width var(--vtg-fluid-duration, 0.3s) ease,
+    height var(--vtg-fluid-duration, 0.3s) ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
