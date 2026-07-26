@@ -6,6 +6,7 @@
       class="vtg-cutout"
       :class="{
         'vtg-animated': animate && (isTransitioning || (fluid && !isScrolling)),
+        'vtg-fluid': animate && fluid && !isScrolling,
       }"
     ></div>
 
@@ -17,6 +18,7 @@
         class="vtg-tooltip-anchor"
         :class="{
         'vtg-animated': animate && (isTransitioning || (fluid && !isScrolling)),
+        'vtg-fluid': animate && fluid && !isScrolling,
       }"
         data-tour-guide-interactive="true"
       >
