@@ -476,6 +476,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - 📖 [Documentation](https://github.com/whytepeter/v-tour-guide)
 - 🐛 [Issue Tracker](https://github.com/whytepeter/v-tour-guide/issues)
 - 💬 [Discussions](https://github.com/whytepeter/v-tour-guide/discussions)
+- 🥤 Vue Tour Guide is free and open source. If it helps you, you can [buy me a malt](https://buymeamalt.com/@whytepeter).
 
 ---
 

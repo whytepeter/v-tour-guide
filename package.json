@@ -39,6 +39,7 @@
   ],
   "author": "Peter Whyte <peteremmanuelwhyte@gmail.com>",
   "license": "MIT",
+  "funding": "https://buymeamalt.com/@whytepeter",
   "repository": {
     "type": "git",
     "url": "https://github.com/whytepeter/v-tour-guide.git"
